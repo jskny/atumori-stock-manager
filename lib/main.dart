@@ -383,10 +383,10 @@ class _MyHomePageState extends State<MyHomePage> {
 							Card(
 								child: Column(children: [
 									ListTile(
-										title: Text("保有カブ数：${_possessionStockNum}")
+										title: Text("保有カブ数：${_possessionStockNum} カブ")
 									),
 									ListTile(
-										title: Text("平均取得額：${_possessionStockAvePrice}")
+										title: Text("平均取得額：${_possessionStockAvePrice}　ベル")
 									),
 									ListTile(
 										title: Text("評価損益額：")
