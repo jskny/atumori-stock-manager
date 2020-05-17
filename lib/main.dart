@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'あつもり カブ価 管理ツール',
+      title: 'あつもり トレードロガー',
       theme: ThemeData.dark(),
-      home: MyHomePage(title: 'あつもり カブ価 管理ツール'),
+      home: MyHomePage(title: 'あつもり トレードロガー'),
     );
   }
 }
