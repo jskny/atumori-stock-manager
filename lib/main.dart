@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 // https://qiita.com/unsoluble_sugar/items/95b16c01b456be19f9ac
 // タブバー関連
 // https://flutter.ctrnost.com/basic/navigation/bottomnavigationbar/
+// https://github.com/fablue/building-a-social-network-with-flutter
 
 void main() {
   runApp(MyApp());
@@ -35,12 +36,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // タブを下部に表示
+  // タブ関連
+  PageController _pageController;
   int _currentIndex = 0;
   final _pageWidgets = [
     new Container(color: Colors.white),
     new Container(color: Colors.grey)
   ];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = new PageController();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _pageController.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +73,13 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ),
 
-      body: _pageWidgets.elementAt(_currentIndex),
+      body: new PageView(
+        children : _pageWidgets,
+
+        // ページ遷移
+        controller: _pageController,
+        onPageChanged: onPageChanged
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
@@ -66,13 +88,27 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         currentIndex: _currentIndex,
         fixedColor: Colors.blueAccent,
-        onTap: _onItemTapped,
+        onTap: onNavigationTapped,
         type: BottomNavigationBarType.fixed,
       )
     );
   }
 
+
   // 下部のナビゲーションバーがタップされたときの挙動
-  void _onItemTapped(int index) => setState(() => _currentIndex = index );
+  void onNavigationTapped(int page) {
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease
+    );
+  }
+
+  // ページ切り替え時
+  void onPageChanged(int index) {
+    setState((){
+      this._currentIndex = index;
+    });
+  }
 
 }
