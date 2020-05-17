@@ -53,7 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _pageWidgets[1] = new ListView(
         children: [
           _historyItemBought(10, 100),
-          _historyItemBought(15, 50)
+          _historyItemBought(15, 50),
+          _historyItemSell(100, 50, 80),
+          _historyItemSell(120, 240, 180)
         ],
       );
 
@@ -136,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child:Icon(Icons.check_circle_outline),
           ),
           Text(
-            "【購入】\n取得単価：${price} ベル\n約定数：${count} カブ\n約定金額：${price * count}ベル\n購入日：2020/05/17",
+            "【購入】\n取得単価：${price} ベル\n約定数　：${count} カブ\n約定金額：${price * count}ベル\n購入日　：2020/05/17",
             style: TextStyle(
               color:Colors.white,
               fontSize: 18.0
@@ -152,5 +154,37 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+
+  // 取引記録（売却）のオブジェクト
+  Widget _historyItemSell(int sellPrice, int sellCount, int boughtPrice) {
+    return GestureDetector(
+      child:Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: new BoxDecoration(
+         border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey))
+        ),
+ 
+      child: Row(
+          children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(10.0),
+            child:Icon(Icons.check_circle_outline),
+          ),
+          Text(
+            "【売却】${(sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n売却単価：${boughtPrice} ベル\n約定数　：${sellCount} カブ\n約定金額：${sellPrice * sellCount}ベル\n損益計算：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()}\n売却日　：2020/05/17",
+            style: TextStyle(
+              color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
+              fontSize: 18.0
+            ),
+          ),
+          ],
+        )
+      ),
+
+      onTap: () {
+       print("onTap called.");
+      },
+    );
+  }
 
 }
