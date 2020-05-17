@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
+
 // 【参考文献】
 // 認証関連
 // https://qiita.com/unsoluble_sugar/items/95b16c01b456be19f9ac
@@ -45,7 +49,10 @@ class TradeInfo {
 	}
 
 
+	// 表示
 	void disp() {
+		// 取引区分：単価：個数
+		// Buy, Sell, Null
 		print("${this.type == 1 ? "B" : (this.type == 2 ? "S" : "N") }, ${this.price}, ${this.number}");
 	}
 }
@@ -83,6 +90,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
 	List<TradeInfo> _tradeInfo = new List<TradeInfo>();
 
+	// 処理日
+	String _systemTimeString = "now loading...";
+
+
+	// 保有カブ数
+	int _possessionStockNum = 0;
+	int _possessionStockAvePrice = 0;
+
 
 	@override
 	void initState() {
@@ -98,6 +113,25 @@ class _MyHomePageState extends State<MyHomePage> {
 		this._tradeInfo.add(new TradeInfo.fill(2, 35, 200));
 		this._tradeInfo.add(new TradeInfo.fill(2, 30, 120));
 
+
+		// 処理日反映
+		initializeDateFormatting('ja');
+		_systemTimeString = (DateFormat('yyyy/MM/dd').format(DateTime.now())).toString();
+
+		// 保有株式数等計算
+		for (int i = 0; i < this._tradeInfo.length; ++i) {
+			// 日付が先週のものは計算除外
+			// TODO:
+
+			if (this._tradeInfo[i].type == 1) {
+				// 買付
+				_possessionStockAvePrice += this._tradeInfo[i].price * this._tradeInfo[i].number;
+				_possessionStockNum += this._tradeInfo[i].number;
+			}
+		}
+		if (_possessionStockNum > 0) {
+			_possessionStockAvePrice = _possessionStockAvePrice ~/ _possessionStockNum;
+		}
 
 		// ホーム画面
 		_pageWidgets[0] = _createHomePage();
@@ -140,13 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
 				return (Padding());
 			}
 		);
-/*			children: [
-				_historyItemBought(10, 100),
-				_historyItemBought(15, 50),
-				_historyItemSell(100, 50, 80),
-				_historyItemSell(120, 240, 180)
-			],
-		);*/
+		// セッティング画面
 		_pageWidgets[2] = _createSettingsPage();
 
 	}
@@ -176,12 +204,6 @@ class _MyHomePageState extends State<MyHomePage> {
 					]
 				)
 			),
-
-
-			// 左側メニュー
-//			drawer: Drawer(
-//				child: _createLeftMenu()
-//			),
 
 			body: new PageView(
 				children : _pageWidgets,
@@ -342,8 +364,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 							Card(child: Column(
 								children: <Widget>[
-									const ListTile(
-										title: Text("現在カブ価：")
+									ListTile(
+										title:    Text("現在カブ価："),
+										subtitle: Text("現在日付　：" + _systemTimeString)
 									)
 								])
 							),
@@ -351,7 +374,7 @@ class _MyHomePageState extends State<MyHomePage> {
 							Card(child: Column(
 								children: <Widget>[
 									const ListTile(
-										title: Text("計算範囲"),
+										title:    Text("計算範囲"),
 										subtitle: Text("2020/05/17-2020/05/23"),
 									)
 								])
@@ -360,10 +383,10 @@ class _MyHomePageState extends State<MyHomePage> {
 							Card(
 								child: Column(children: [
 									ListTile(
-										title: Text("保有カブ数：")
+										title: Text("保有カブ数：${_possessionStockNum}")
 									),
 									ListTile(
-										title: Text("平均取得額：")
+										title: Text("平均取得額：${_possessionStockAvePrice}")
 									),
 									ListTile(
 										title: Text("評価損益額：")
