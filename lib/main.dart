@@ -14,6 +14,42 @@ import 'package:google_sign_in/google_sign_in.dart';
 // 取引履歴のListView関連
 // https://flutter.ctrnost.com/basic/layout/listview/
 
+
+// 取引ログ格納用構造体
+class TradeInfo {
+	// 取引区分（０＝未指定、１＝買付、２＝売却）
+	int type;
+
+	// 取引単価
+	int price;
+
+	// 取引個数
+	int number;
+
+	// 処理日付等
+	int date;
+
+	// 初期化だけをするコンストラクタ
+	TradeInfo() : 
+		this.type = 0,
+		this.price = 0,
+		this.number = 0,
+		this.date = 0;
+
+
+	// 取引区分、単価価格、数量
+	TradeInfo.fill(int t, int p, int n) {
+		this.type = t;
+		this.price = p;
+		this.number = n;
+	}
+
+
+	void disp() {
+		print("${this.type == 1 ? "B" : (this.type == 2 ? "S" : "N") }, ${this.price}, ${this.number}");
+	}
+}
+
 void main() {
 	runApp(MyApp());
 }
@@ -23,9 +59,9 @@ class MyApp extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		return MaterialApp(
-			title: 'あつもり トレードロガー',
+			title: 'カブ価メモ君',
 			theme: ThemeData.dark(),
-			home: MyHomePage(title: 'あつもり トレードロガー'),
+			home: MyHomePage(title: 'カブ価メモ君'),
 		);
 	}
 }
@@ -43,7 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
 	// タブ関連
 	PageController _pageController;
 	int _currentIndex = 0;
-	List<Widget> _pageWidgets = new List(2);
+	List<Widget> _pageWidgets = new List(3);
+
+	List<TradeInfo> _tradeInfo = new List<TradeInfo>();
 
 
 	@override
@@ -51,17 +89,65 @@ class _MyHomePageState extends State<MyHomePage> {
 		super.initState();
 		_pageController = new PageController();
 
+
+		// 買付ダミー
+		this._tradeInfo.add(new TradeInfo.fill(1, 50, 150));
+		this._tradeInfo.add(new TradeInfo.fill(1, 15, 50));
+
+		// 売却ダミー
+		this._tradeInfo.add(new TradeInfo.fill(2, 35, 200));
+		this._tradeInfo.add(new TradeInfo.fill(2, 30, 120));
+
+
 		// ホーム画面
 		_pageWidgets[0] = _createHomePage();
 		// 取引履歴画面
-		_pageWidgets[1] = new ListView(
-			children: [
+		_pageWidgets[1] = new ListView.builder(
+			itemCount: this._tradeInfo.length,
+			itemBuilder: (context, int index) {
+				// 買付の場合
+				if (this._tradeInfo[index].type == 1) {
+					return (_historyItemBought(this._tradeInfo[index].price, this._tradeInfo[index].number));
+				}
+				// 売却の場合
+				else if (this._tradeInfo[index].type == 2) {
+					// 平均取得残高計算
+					int tmpPrice = 0;
+					int tmpCnt = 0;
+
+					// ログから平均取得残高を計算
+					for (int i = 0; i < this._tradeInfo.length; ++i) {
+						// 日付が先週のものは計算除外
+						// TODO:
+
+						if (this._tradeInfo[i].type == 1) {
+							// 買付
+							tmpPrice += this._tradeInfo[i].price * this._tradeInfo[i].number;
+							tmpCnt += this._tradeInfo[i].number;
+						}
+
+						print("${tmpCnt}:${tmpPrice}");
+						this._tradeInfo[i].disp();
+					}
+
+					if (tmpPrice > 0) {
+						tmpPrice = tmpPrice ~/ tmpCnt;
+					}
+
+					return (_historyItemSell(this._tradeInfo[index].price, this._tradeInfo[index].number, tmpPrice));
+				}
+
+				return (Padding());
+			}
+		);
+/*			children: [
 				_historyItemBought(10, 100),
 				_historyItemBought(15, 50),
 				_historyItemSell(100, 50, 80),
 				_historyItemSell(120, 240, 180)
 			],
-		);
+		);*/
+		_pageWidgets[2] = _createSettingsPage();
 
 	}
 
@@ -81,7 +167,11 @@ class _MyHomePageState extends State<MyHomePage> {
 					children: [
 						Container(
 							padding: const EdgeInsets.all(8.0),
-							child: Text(widget.title)
+							child: Icon(
+								Icons.show_chart,
+								color: Colors.red,
+								size: 36.0
+							)
 						)
 					]
 				)
@@ -89,9 +179,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 			// 左側メニュー
-			drawer: Drawer(
-				child: _createLeftMenu()
-			),
+//			drawer: Drawer(
+//				child: _createLeftMenu()
+//			),
 
 			body: new PageView(
 				children : _pageWidgets,
@@ -106,6 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
 				items: <BottomNavigationBarItem>[
 					BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
 					BottomNavigationBarItem(icon: Icon(Icons.history), title: Text('History')),
+					BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('Settings'))
 				],
 				currentIndex: _currentIndex,
 				fixedColor: Colors.blueAccent,
@@ -156,7 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
 							"約定金額：${price * count} ベル\n"
 							"購入日　：2020/05/17",
 							style: TextStyle(
-								color:Colors.white,
+								color:Colors.lightGreen,
 								fontSize: 14.0
 							),
 						),
@@ -190,11 +281,12 @@ class _MyHomePageState extends State<MyHomePage> {
 							),
 							Text(
 								"【売却】${(sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n"
-								"売却単価：${boughtPrice} ベル\n"
-								"約定数　：${sellCount} カブ\n"
-								"約定金額：${sellPrice * sellCount} ベル\n"
-								"損益計算：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()} ベル\n"
-								"売却日　：2020/05/17",
+								"平均購入単価：${boughtPrice} ベル\n"
+								"売却単価　　：${sellPrice} ベル\n"
+								"約定数　　　：${sellCount} カブ\n"
+								"約定金額　　：${sellPrice * sellCount} ベル\n"
+								"損益計算　　：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()} ベル\n"
+								"売却日　　　：2020/05/17",
 								style: TextStyle(
 									color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
 									fontSize: 14.0
@@ -210,35 +302,6 @@ class _MyHomePageState extends State<MyHomePage> {
 		);
 	}
 
-	// 【左メニュー】
-	ListView _createLeftMenu() {
-		return (new ListView(
-				padding: EdgeInsets.zero,
-
-				children: <Widget>[
-					ListTile(
-						title: Text(
-							"あつもり トレードロガー",
-							style: new TextStyle(
-								color: Colors.white,
-								fontSize: 16.0
-								)
-						)
-					),
-					ListTile(
-						title: Text("Settings"),
-						onTap: () {
-							print("setting.");
-						},
-					),
-					ListTile(
-						title: Text("(c) jskny")
-					)
-				]
-			)
-		);
-	}
-
 
 	// ホーム画面
 	Container _createHomePage() {
@@ -247,6 +310,10 @@ class _MyHomePageState extends State<MyHomePage> {
 				children: [
 					Column(
 						children: <Widget>[
+							Container(
+								padding: const EdgeInsets.all(2),
+							),
+
 							Column(
 								// ボタンを横幅最大まで伸ばすため
 								crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -255,7 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
 									RaisedButton(
 										padding: const EdgeInsets.all(8.0),
 										child: const Text('現在カブ値記帳'),
-										onPressed: (){}
+										onPressed: (){},
 									),
 
 									RaisedButton(
@@ -281,10 +348,19 @@ class _MyHomePageState extends State<MyHomePage> {
 								])
 							),
 
+							Card(child: Column(
+								children: <Widget>[
+									const ListTile(
+										title: Text("計算範囲"),
+										subtitle: Text("2020/05/17-2020/05/23"),
+									)
+								])
+							),
+
 							Card(
 								child: Column(children: [
 									ListTile(
-										title: Text("保有株数　：")
+										title: Text("保有カブ数：")
 									),
 									ListTile(
 										title: Text("平均取得額：")
@@ -304,5 +380,58 @@ class _MyHomePageState extends State<MyHomePage> {
 		));
 	}
 
+
+	// 設定ページ
+	Container _createSettingsPage() {
+		return (new Container(
+			child: ListView(
+				children: <Widget>[
+					Column(
+						children: <Widget>[
+							Card(
+								child: Column(
+									children: [
+										ListTile(
+											title: Text(
+												"カブ価メモ君",
+												style: new TextStyle(
+													color: Colors.white,
+													fontSize: 16.0
+												)
+											)
+										),
+										ListTile(
+											title: Text(
+												"あつまれどうぶつの森のゲーム内における、\n"
+												"ベル稼ぎ手段のカブについて、\n"
+												"購入時の金額などを忘れることを防止するため、\n"
+												"本ソフトウェアは作成されました。\n"
+												"\n"
+												"ご自由にご活用くださいませ",
+												style: new TextStyle(
+													color: Colors.lightGreen,
+													fontSize: 14.0
+												)
+											)
+										)
+									]
+								)
+							),
+
+							Card(
+								child: Column(
+									children: [
+										ListTile(
+											title: Text("(c) jskny")
+										)
+									]
+								),
+							)
+						]
+					),
+				]
+			)
+		));
+	}
 
 }
