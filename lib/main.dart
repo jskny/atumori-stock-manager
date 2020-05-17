@@ -1,5 +1,12 @@
 ﻿import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+// 【参考文献】
+// 認証関連
+// https://qiita.com/unsoluble_sugar/items/95b16c01b456be19f9ac
+
 void main() {
   runApp(MyApp());
 }
