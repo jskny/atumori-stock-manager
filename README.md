@@ -2,6 +2,18 @@
 
 It is a web application that performs the record of the stock price etc. in the game of Atsutare Animal Crossing.
 
+## Run command
+
+Run
+```
+flutter run -d chrome
+```
+
+Build
+```
+flutter build web
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
