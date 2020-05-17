@@ -83,6 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ),
 
+
+      // 左側メニュー
+      drawer: Drawer(
+        child: new ListView(
+          children: [
+              _leftMenuTitle(),
+              _leftMenuAuther()
+          ],
+        )
+      ),
+
       body: new PageView(
         children : _pageWidgets,
 
@@ -91,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPageChanged: onPageChanged
       ),
 
+      // 下メニューバー
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
@@ -133,17 +145,17 @@ class _MyHomePageState extends State<MyHomePage> {
  
       child: Row(
           children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(10.0),
-            child:Icon(Icons.check_circle_outline),
-          ),
-          Text(
-            "【購入】\n取得単価：${price} ベル\n約定数　：${count} カブ\n約定金額：${price * count}ベル\n購入日　：2020/05/17",
-            style: TextStyle(
-              color:Colors.white,
-              fontSize: 18.0
+            Container(
+              margin: EdgeInsets.all(10.0),
+              child:Icon(Icons.check_circle_outline),
             ),
-          ),
+            Text(
+              "【購入】\n取得単価：${price} ベル\n約定数　：${count} カブ\n約定金額：${price * count}ベル\n購入日　：2020/05/17",
+              style: TextStyle(
+                color:Colors.white,
+                fontSize: 18.0
+              ),
+            ),
           ],
         )
       ),
@@ -159,9 +171,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _historyItemSell(int sellPrice, int sellCount, int boughtPrice) {
     return GestureDetector(
       child:Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: new BoxDecoration(
-         border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey))
+          padding: EdgeInsets.all(8.0),
+          decoration: new BoxDecoration(
+          border: new Border(
+            bottom: BorderSide(width: 1.0, color: Colors.grey)
+          )
         ),
  
       child: Row(
@@ -184,6 +198,64 @@ class _MyHomePageState extends State<MyHomePage> {
       onTap: () {
        print("onTap called.");
       },
+    );
+  }
+
+
+  // 左メニューのタイトル
+  Widget _leftMenuTitle() {
+      return GestureDetector(
+        child: Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: new BoxDecoration(
+              border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey)
+            )
+          ),
+
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(10.0)
+              ),
+              Text(
+                "あつもり トレードロガー",
+                style: TextStyle(
+                  color:Colors.white,
+                  fontSize: 16.0
+                )
+              )
+            ]
+          )
+        )
+      );
+  }
+
+
+  // 作者表記
+  Widget _leftMenuAuther() {
+    return GestureDetector(
+      child: Container(
+          padding: EdgeInsets.all(8.0),
+          decoration: new BoxDecoration(
+            border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey)
+          )
+        ),
+
+        child: Row(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(10.0)
+            ),
+            Text(
+              "jskny",
+              style: TextStyle(
+                color:Colors.white,
+                fontSize: 12.0
+              )
+            )
+          ]
+        )
+      )
     );
   }
 
