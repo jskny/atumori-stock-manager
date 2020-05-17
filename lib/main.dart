@@ -52,16 +52,16 @@ class _MyHomePageState extends State<MyHomePage> {
 		_pageController = new PageController();
 
 		// ホーム画面
-		_pageWidgets[0] = new Container(color: Colors.white);
+		_pageWidgets[0] = _createHomePage();
 		// 取引履歴画面
 		_pageWidgets[1] = new ListView(
-				children: [
-					_historyItemBought(10, 100),
-					_historyItemBought(15, 50),
-					_historyItemSell(100, 50, 80),
-					_historyItemSell(120, 240, 180)
-				],
-			);
+			children: [
+				_historyItemBought(10, 100),
+				_historyItemBought(15, 50),
+				_historyItemSell(100, 50, 80),
+				_historyItemSell(120, 240, 180)
+			],
+		);
 
 	}
 
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 			// 左側メニュー
 			drawer: Drawer(
-			  	child: _createLeftMenu()
+					child: _createLeftMenu()
 			),
 
 			body: new PageView(
@@ -139,9 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
 			child:Container(
 				padding: EdgeInsets.all(8.0),
 				decoration: new BoxDecoration(
-				 border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey))
-				),
- 
+					border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey)
+				)
+			),
+
 			child: Row(
 					children: <Widget>[
 						Container(
@@ -152,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
 							"【購入】\n取得単価：${price} ベル\n約定数　：${count} カブ\n約定金額：${price * count}ベル\n購入日　：2020/05/17",
 							style: TextStyle(
 								color:Colors.white,
-								fontSize: 18.0
+								fontSize: 14.0
 							),
 						),
 					],
@@ -176,23 +177,23 @@ class _MyHomePageState extends State<MyHomePage> {
 						bottom: BorderSide(width: 1.0, color: Colors.grey)
 					)
 				),
- 
-			child: Row(
-					children: <Widget>[
-					Container(
-						margin: EdgeInsets.all(10.0),
-						child:Icon(Icons.check_circle_outline),
-					),
-					Text(
-						"【売却】${(sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n売却単価：${boughtPrice} ベル\n約定数　：${sellCount} カブ\n約定金額：${sellPrice * sellCount}ベル\n損益計算：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()}\n売却日　：2020/05/17",
-						style: TextStyle(
-							color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
-							fontSize: 18.0
-						),
-					),
-					],
-				)
-			),
+
+				child: Row(
+						children: <Widget>[
+							Container(
+								margin: EdgeInsets.all(10.0),
+								child:Icon(Icons.check_circle_outline),
+							),
+							Text(
+								"【売却】${(sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n売却単価：${boughtPrice} ベル\n約定数　：${sellCount} カブ\n約定金額：${sellPrice * sellCount}ベル\n損益計算：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()}\n売却日　：2020/05/17",
+								style: TextStyle(
+									color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
+									fontSize: 14.0
+								),
+							),
+						],
+					)
+				),
 
 			onTap: () {
 			 print("onTap called.");
@@ -200,34 +201,99 @@ class _MyHomePageState extends State<MyHomePage> {
 		);
 	}
 
-
 	// 【左メニュー】
 	ListView _createLeftMenu() {
-			return (new ListView(
-          padding: EdgeInsets.zero,
+		return (new ListView(
+				padding: EdgeInsets.zero,
 
-          children: <Widget>[
-            ListTile(
-              title: Text(
-                "あつもり トレードロガー",
-                style: new TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0
-                 )
-              )
-            ),
-            ListTile(
-              title: Text("Settings"),
-              onTap: () {
-                print("setting.");
-              },
-            ),
-            ListTile(
-              title: Text("(c) jskny")
-            )
-          ]
-        )
-      );
+				children: <Widget>[
+					ListTile(
+						title: Text(
+							"あつもり トレードロガー",
+							style: new TextStyle(
+								color: Colors.white,
+								fontSize: 16.0
+								)
+						)
+					),
+					ListTile(
+						title: Text("Settings"),
+						onTap: () {
+							print("setting.");
+						},
+					),
+					ListTile(
+						title: Text("(c) jskny")
+					)
+				]
+			)
+		);
 	}
+
+
+	// ホーム画面
+	Container _createHomePage() {
+		return (new Container(
+			child: ListView(
+				children: [
+					Column(
+						children: <Widget>[
+							Column(
+								// ボタンを横幅最大まで伸ばすため
+								crossAxisAlignment: CrossAxisAlignment.stretch,
+
+								children: <Widget>[
+									RaisedButton(
+										padding: const EdgeInsets.all(8.0),
+										child: const Text('現在カブ値記帳'),
+										onPressed: (){}
+									),
+
+									RaisedButton(
+										padding: const EdgeInsets.all(8.0),
+										child: const Text('購入記帳'),
+										onPressed: (){}
+									),
+
+									RaisedButton(
+										padding: const EdgeInsets.all(8.0),
+										child: const Text('売却記帳'),
+										onPressed: (){}
+									)
+
+								]
+							),
+
+							Card(child: Column(
+								children: <Widget>[
+									const ListTile(
+										title: Text("現在カブ価：")
+									)
+								])
+							),
+
+							Card(
+								child: Column(children: [
+									ListTile(
+										title: Text("保有株数　：")
+									),
+									ListTile(
+										title: Text("平均取得額：")
+									),
+									ListTile(
+										title: Text("評価損益額：")
+									),
+									ListTile(
+										title: Text("利益率　　：")
+									)
+								])
+							)
+						]
+					),
+				]
+			)
+		));
+	}
+
 
 }
