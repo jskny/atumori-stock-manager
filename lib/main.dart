@@ -9,6 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 // タブバー関連
 // https://flutter.ctrnost.com/basic/navigation/bottomnavigationbar/
 // https://github.com/fablue/building-a-social-network-with-flutter
+// 取引履歴のListView関連
+// https://flutter.ctrnost.com/basic/layout/listview/
 
 void main() {
   runApp(MyApp());
@@ -39,16 +41,22 @@ class _MyHomePageState extends State<MyHomePage> {
   // タブ関連
   PageController _pageController;
   int _currentIndex = 0;
-  final _pageWidgets = [
-    new Container(color: Colors.white),
-    new Container(color: Colors.grey)
-  ];
+  List<Widget> _pageWidgets = new List(2);
 
 
   @override
   void initState() {
     super.initState();
     _pageController = new PageController();
+
+    _pageWidgets[0] = new Container(color: Colors.white);
+    _pageWidgets[1] = new ListView(
+        children: [
+          _historyItemBought(10, 100),
+          _historyItemBought(15, 50)
+        ],
+      );
+
   }
 
   @override
@@ -110,5 +118,39 @@ class _MyHomePageState extends State<MyHomePage> {
       this._currentIndex = index;
     });
   }
+
+
+  // 取引記録（購入）のオブジェクト
+  Widget _historyItemBought(int price, int count) {
+    return GestureDetector(
+      child:Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: new BoxDecoration(
+         border: new Border(bottom: BorderSide(width: 1.0, color: Colors.grey))
+        ),
+ 
+      child: Row(
+          children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(10.0),
+            child:Icon(Icons.check_circle_outline),
+          ),
+          Text(
+            "【購入】\n取得単価：${price} ベル\n約定数：${count} カブ\n約定金額：${price * count}ベル\n購入日：2020/05/17",
+            style: TextStyle(
+              color:Colors.white,
+              fontSize: 18.0
+            ),
+          ),
+          ],
+        )
+      ),
+
+      onTap: () {
+       print("onTap called.");
+      },
+    );
+  }
+
 
 }
