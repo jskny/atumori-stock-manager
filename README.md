@@ -4,6 +4,13 @@ It is a web application that performs the record of the stock price etc. in the 
 
 ## Run command
 
+Setup
+```
+flutter channel beta
+flutter upgrade
+flutter config --enable-web
+'''
+
 Run
 ```
 flutter run -d chrome
