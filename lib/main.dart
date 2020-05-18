@@ -1,13 +1,12 @@
-﻿import 'dart:html';
-
-import 'package:flutter/material.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+﻿import 'package:flutter/material.dart';
 
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+// ポップ通知
+// https://qiita.com/umechanhika/items/734a716dd592e758ba45
+// https://buildbox.net/flutter-toast/
+import 'package:fluttertoast/fluttertoast.dart';
 
 // 【参考文献】
 // 認証関連
@@ -88,10 +87,15 @@ class _MyHomePageState extends State<MyHomePage> {
 	int _currentIndex = 0;
 	List<Widget> _pageWidgets = new List(3);
 
+ 	// 取引履歴
 	List<TradeInfo> _tradeInfo = new List<TradeInfo>();
 
 	// 処理日
 	String _systemTimeString = "now loading...";
+
+	// 現在株価入力用
+	int _nowPrice = 0;
+	String _inputNowPrice = "";
 
 
 	// 保有カブ数
@@ -117,6 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
 		// 処理日反映
 		initializeDateFormatting('ja');
 		_systemTimeString = (DateFormat('yyyy/MM/dd').format(DateTime.now())).toString();
+
+		// 現在株価
+		_nowPrice = 0;
+		_inputNowPrice = "";
 
 		// 保有株式数等計算
 		for (int i = 0; i < this._tradeInfo.length; ++i) {
@@ -344,7 +352,56 @@ class _MyHomePageState extends State<MyHomePage> {
 									RaisedButton(
 										padding: const EdgeInsets.all(8.0),
 										child: const Text('現在カブ値記帳'),
-										onPressed: (){},
+										onPressed: (){
+											showDialog(
+												context: context,
+												builder: (BuildContext context) {
+													return SimpleDialog(
+														children: <Widget>[
+															Center(
+																child: Text("現在カブ価記帳",
+																style: TextStyle(
+																	fontSize: 16.0
+																),),
+															),
+
+															TextField(
+																decoration: new InputDecoration(
+																	border: OutlineInputBorder(),
+																	labelText: "カブ価"
+																),
+																keyboardType: TextInputType.number,
+
+																maxLength: 3,
+																onChanged: (text){
+																	if (text.length > 0) {
+																		_inputNowPrice = text;
+																	}
+																},
+															),
+
+															Container(
+																padding: const EdgeInsets.all(4.0),
+																child: Icon(
+																	Icons.show_chart,
+																	color: Colors.red,
+																	size: 18.0
+																)
+															),
+
+															SimpleDialogOption(
+																onPressed: (){
+																	Navigator.pop(context, 1);
+																	Fluttertoast.showToast(msg: "記帳しました。");
+print(_inputNowPrice);
+																},
+																child: const Text('記帳完了')
+															)
+														],
+													);
+												}
+											);
+										}
 									),
 
 									RaisedButton(
