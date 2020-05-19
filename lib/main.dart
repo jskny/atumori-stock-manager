@@ -60,6 +60,18 @@ void main() {
 	runApp(MyApp());
 }
 
+
+// 文字列が数値か判定する
+// https://ja.coder.work/so/string/228144
+bool isNumeric(String s) {
+	if(s == null) {
+		return (false);
+	}
+
+	return (double.tryParse(s) != null);
+}
+
+
 class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
 	@override
@@ -401,6 +413,12 @@ class _MyHomePageState extends State<MyHomePage> {
 																			return;
 																		}
 
+
+																		if (isNumeric(_inputNowPrice) == false) {
+																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
+																			return;
+																		}
+
 																		Navigator.pop(context, 1);
 																		Fluttertoast.showToast(msg: "記帳しました。");
 print(_inputNowPrice);
@@ -483,6 +501,15 @@ print(_inputNowPrice);
 																			return;
 																		}
 
+																		if (isNumeric(_inputBuyPrice) == false) {
+																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
+																			return;
+																		}
+																		else if (isNumeric(_inputBuyNumber) == false) {
+																			Fluttertoast.showToast(msg: "購入数に数値を入力してください");
+																			return;
+																		}
+
 																		Navigator.pop(context, 1);
 																		Fluttertoast.showToast(msg: "記帳しました。");
 print(_inputBuyPrice + ":" + _inputBuyNumber);
@@ -562,6 +589,15 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 																		}
 																		else if (_inputSellNumber.length == 0) {
 																			Fluttertoast.showToast(msg: "売却数を入力してください。");
+																			return;
+																		}
+
+																		if (isNumeric(_inputSellPrice) == false) {
+																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
+																			return;
+																		}
+																		else if (isNumeric(_inputSellNumber) == false) {
+																			Fluttertoast.showToast(msg: "売却数に数値を入力してください");
 																			return;
 																		}
 
