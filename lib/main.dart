@@ -393,13 +393,20 @@ class _MyHomePageState extends State<MyHomePage> {
 																)
 															),
 
-															SimpleDialogOption(
-																onPressed: (){
-																	Navigator.pop(context, 1);
-																	Fluttertoast.showToast(msg: "記帳しました。");
+															Center(
+																child: SimpleDialogOption(
+																	onPressed: (){
+																		if (_inputNowPrice.length == 0) {
+																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
+																			return;
+																		}
+
+																		Navigator.pop(context, 1);
+																		Fluttertoast.showToast(msg: "記帳しました。");
 print(_inputNowPrice);
-																},
-																child: const Text('記帳')
+																	},
+																	child: const Text('記帳')
+																)
 															)
 														],
 													);
@@ -464,15 +471,25 @@ print(_inputNowPrice);
 																)
 															),
 
-															SimpleDialogOption(
-																onPressed: (){
-																	Navigator.pop(context, 1);
-																	Fluttertoast.showToast(msg: "記帳しました。");
-print(_inputBuyPrice + ":" + _inputBuyNumber);
-																},
-																child: const Text('記帳')
-															)
+															Center(
+																child: SimpleDialogOption(
+																	onPressed: (){
+																		if (_inputBuyPrice.length == 0) {
+																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
+																			return;
+																		}
+																		else if (_inputBuyNumber.length == 0) {
+																			Fluttertoast.showToast(msg: "購入数を入力してください。");
+																			return;
+																		}
 
+																		Navigator.pop(context, 1);
+																		Fluttertoast.showToast(msg: "記帳しました。");
+print(_inputBuyPrice + ":" + _inputBuyNumber);
+																	},
+																	child: const Text('記帳')
+																)
+															)
 														]
 													);
 												}
@@ -536,13 +553,24 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 																)
 															),
 
-															SimpleDialogOption(
-																onPressed: (){
-																	Navigator.pop(context, 1);
-																	Fluttertoast.showToast(msg: "記帳しました。");
+															Center(
+																child: SimpleDialogOption(
+																	onPressed: (){
+																		if (_inputSellPrice.length == 0) {
+																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
+																			return;
+																		}
+																		else if (_inputSellNumber.length == 0) {
+																			Fluttertoast.showToast(msg: "売却数を入力してください。");
+																			return;
+																		}
+
+																		Navigator.pop(context, 1);
+																		Fluttertoast.showToast(msg: "記帳しました。");
 print(_inputSellPrice + ":" + _inputSellNumber);
-																},
-																child: const Text('記帳')
+																	},
+																	child: const Text('記帳')
+																)
 															)
 														]
 													);
