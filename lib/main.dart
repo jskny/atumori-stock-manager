@@ -97,6 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
 	int _nowPrice = 0;
 	String _inputNowPrice = "";
 
+	// 記帳時
+	String _inputBuyPrice = "", _inputBuyNumber = "";
+	String _inputSellPrice = "", _inputSellNumber = "";
+
 
 	// 保有カブ数
 	int _possessionStockNum = 0;
@@ -395,7 +399,7 @@ class _MyHomePageState extends State<MyHomePage> {
 																	Fluttertoast.showToast(msg: "記帳しました。");
 print(_inputNowPrice);
 																},
-																child: const Text('記帳完了')
+																child: const Text('記帳')
 															)
 														],
 													);
@@ -407,13 +411,144 @@ print(_inputNowPrice);
 									RaisedButton(
 										padding: const EdgeInsets.all(8.0),
 										child: const Text('購入記帳'),
-										onPressed: (){}
+										onPressed: (){
+											showDialog(
+												context: context,
+												builder: (BuildContext context) {
+													return SimpleDialog(
+														children: <Widget>[
+															Center(
+																child: Text("購入記帳",
+																	style: TextStyle(
+																		fontSize: 16.0
+																	)
+																)
+															),
+
+															TextField(
+																decoration: new InputDecoration(
+																	border: OutlineInputBorder(),
+																	labelText: "カブ価"
+																),
+																keyboardType: TextInputType.number,
+
+																maxLength: 3,
+																onChanged: (text){
+																	if (text.length > 0) {
+																		_inputBuyPrice = text;
+																	}
+																},
+															),
+
+															TextField(
+																decoration: new InputDecoration(
+																	border: OutlineInputBorder(),
+																	labelText: "購入数"
+																),
+																keyboardType: TextInputType.number,
+
+																maxLength: 5,
+																onChanged: (text){
+																	if (text.length > 0) {
+																		_inputBuyNumber = text;
+																	}
+																},
+															),
+
+															Container(
+																padding: const EdgeInsets.all(4.0),
+																child: Icon(
+																	Icons.show_chart,
+																	color: Colors.green,
+																	size: 18.0
+																)
+															),
+
+															SimpleDialogOption(
+																onPressed: (){
+																	Navigator.pop(context, 1);
+																	Fluttertoast.showToast(msg: "記帳しました。");
+print(_inputBuyPrice + ":" + _inputBuyNumber);
+																},
+																child: const Text('記帳')
+															)
+
+														]
+													);
+												}
+											);
+										}
 									),
 
 									RaisedButton(
 										padding: const EdgeInsets.all(8.0),
 										child: const Text('売却記帳'),
-										onPressed: (){}
+										onPressed: (){
+											showDialog(
+												context: context,
+												builder: (BuildContext context) {
+													return SimpleDialog(
+														children: <Widget>[
+															Center(
+																child: Text("売却記帳",
+																	style: TextStyle(
+																		fontSize: 16.0
+																	)
+																)
+															),
+
+															TextField(
+																decoration: new InputDecoration(
+																	border: OutlineInputBorder(),
+																	labelText: "カブ価"
+																),
+																keyboardType: TextInputType.number,
+
+																maxLength: 3,
+																onChanged: (text){
+																	if (text.length > 0) {
+																		_inputSellPrice = text;
+																	}
+																},
+															),
+
+															TextField(
+																decoration: new InputDecoration(
+																	border: OutlineInputBorder(),
+																	labelText: "売却数"
+																),
+																keyboardType: TextInputType.number,
+
+																maxLength: 5,
+																onChanged: (text){
+																	if (text.length > 0) {
+																		_inputSellNumber = text;
+																	}
+																},
+															),
+
+															Container(
+																padding: const EdgeInsets.all(4.0),
+																child: Icon(
+																	Icons.show_chart,
+																	color: Colors.yellow,
+																	size: 18.0
+																)
+															),
+
+															SimpleDialogOption(
+																onPressed: (){
+																	Navigator.pop(context, 1);
+																	Fluttertoast.showToast(msg: "記帳しました。");
+print(_inputSellPrice + ":" + _inputSellNumber);
+																},
+																child: const Text('記帳')
+															)
+														]
+													);
+												}
+											);
+										}
 									)
 
 								]
