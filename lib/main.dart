@@ -68,7 +68,7 @@ bool isNumeric(String s) {
 		return (false);
 	}
 
-	return (double.tryParse(s) != null);
+	return (int.tryParse(s) != null);
 }
 
 
@@ -352,9 +352,10 @@ class _MyHomePageState extends State<MyHomePage> {
 	// ホーム画面
 	Container _createHomePage() {
 		return (new Container(
-			child: ListView(
-				children: [
-					Column(
+			child: ListView.builder(
+				itemCount: 1,
+				itemBuilder: (context, int index) {
+					return (Column(
 						children: <Widget>[
 							Container(
 								padding: const EdgeInsets.all(2),
@@ -406,22 +407,35 @@ class _MyHomePageState extends State<MyHomePage> {
 															),
 
 															Center(
-																child: SimpleDialogOption(
+																child: RaisedButton(
 																	onPressed: (){
 																		if (_inputNowPrice.length == 0) {
 																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
 																			return;
 																		}
 
-
 																		if (isNumeric(_inputNowPrice) == false) {
 																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
 																			return;
 																		}
 
+																		int tmp = int.parse(_inputNowPrice);
+																		if (tmp <= 0) {
+																			if (_inputNowPrice.length == 0) {
+																				Fluttertoast.showToast(msg: "カブ価には0よりも大きい値を入力してください。");
+																				return;
+																			}
+																		}
+																		else {
+																			// 現在株価を更新
+																			setState(() {
+																				_nowPrice = tmp;
+																			});
+																		}
+
 																		Navigator.pop(context, 1);
-																		Fluttertoast.showToast(msg: "記帳しました。");
-print(_inputNowPrice);
+																		Fluttertoast.showToast(msg: "現在カブ価を更新しました。");
+print(_nowPrice);
 																	},
 																	child: const Text('記帳')
 																)
@@ -490,7 +504,7 @@ print(_inputNowPrice);
 															),
 
 															Center(
-																child: SimpleDialogOption(
+																child: RaisedButton(
 																	onPressed: (){
 																		if (_inputBuyPrice.length == 0) {
 																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
@@ -581,7 +595,7 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 															),
 
 															Center(
-																child: SimpleDialogOption(
+																child: RaisedButton(
 																	onPressed: (){
 																		if (_inputSellPrice.length == 0) {
 																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
@@ -621,7 +635,7 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 							Card(child: Column(
 								children: <Widget>[
 									ListTile(
-										title:    Text("現在カブ価："),
+										title:    Text("現在カブ価：${(this._nowPrice == 0 ? "【現在カブ価未記帳】" : this._nowPrice)}"),
 										subtitle: Text("現在日付　：" + _systemTimeString)
 									)
 								])
@@ -653,8 +667,8 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 								])
 							)
 						]
-					),
-				]
+					));
+				}
 			)
 		));
 	}
