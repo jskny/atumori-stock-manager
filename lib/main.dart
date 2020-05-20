@@ -366,311 +366,347 @@ class _MyHomePageState extends State<MyHomePage> {
 								crossAxisAlignment: CrossAxisAlignment.stretch,
 
 								children: <Widget>[
-									RaisedButton(
-										padding: const EdgeInsets.all(8.0),
-										child: const Text('現在カブ値記帳'),
-										onPressed: (){
-											showDialog(
-												context: context,
-												builder: (BuildContext context) {
-													return SimpleDialog(
-														children: <Widget>[
-															Center(
-																child: Text("現在カブ価記帳",
-																style: TextStyle(
-																	fontSize: 16.0
-																),),
-															),
-
-															TextField(
-																decoration: new InputDecoration(
-																	border: OutlineInputBorder(),
-																	labelText: "カブ価"
-																),
-																keyboardType: TextInputType.number,
-
-																maxLength: 3,
-																onChanged: (text){
-																	if (text.length > 0) {
-																		_inputNowPrice = text;
-																	}
-																},
-															),
-
-															Container(
-																padding: const EdgeInsets.all(4.0),
-																child: Icon(
-																	Icons.show_chart,
-																	color: Colors.red,
-																	size: 18.0
-																)
-															),
-
-															Center(
-																child: RaisedButton(
-																	onPressed: (){
-																		if (_inputNowPrice.length == 0) {
-																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
-																			return;
-																		}
-
-																		if (isNumeric(_inputNowPrice) == false) {
-																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
-																			return;
-																		}
-
-																		int tmp = int.parse(_inputNowPrice);
-																		if (tmp <= 0) {
-																			if (_inputNowPrice.length == 0) {
-																				Fluttertoast.showToast(msg: "カブ価には0よりも大きい値を入力してください。");
-																				return;
-																			}
-																		}
-																		else {
-																			// 現在株価を更新
-																			setState(() {
-																				_nowPrice = tmp;
-																			});
-																		}
-
-																		Navigator.pop(context, 1);
-																		Fluttertoast.showToast(msg: "現在カブ価を更新しました。");
-print(_nowPrice);
-																	},
-																	child: const Text('記帳')
-																)
-															)
-														],
-													);
-												}
-											);
-										}
-									),
-
-									RaisedButton(
-										padding: const EdgeInsets.all(8.0),
-										child: const Text('購入記帳'),
-										onPressed: (){
-											showDialog(
-												context: context,
-												builder: (BuildContext context) {
-													return SimpleDialog(
-														children: <Widget>[
-															Center(
-																child: Text("購入記帳",
-																	style: TextStyle(
-																		fontSize: 16.0
-																	)
-																)
-															),
-
-															TextField(
-																decoration: new InputDecoration(
-																	border: OutlineInputBorder(),
-																	labelText: "カブ価"
-																),
-																keyboardType: TextInputType.number,
-
-																maxLength: 3,
-																onChanged: (text){
-																	if (text.length > 0) {
-																		_inputBuyPrice = text;
-																	}
-																},
-															),
-
-															TextField(
-																decoration: new InputDecoration(
-																	border: OutlineInputBorder(),
-																	labelText: "購入数"
-																),
-																keyboardType: TextInputType.number,
-
-																maxLength: 5,
-																onChanged: (text){
-																	if (text.length > 0) {
-																		_inputBuyNumber = text;
-																	}
-																},
-															),
-
-															Container(
-																padding: const EdgeInsets.all(4.0),
-																child: Icon(
-																	Icons.show_chart,
-																	color: Colors.green,
-																	size: 18.0
-																)
-															),
-
-															Center(
-																child: RaisedButton(
-																	onPressed: (){
-																		if (_inputBuyPrice.length == 0) {
-																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
-																			return;
-																		}
-																		else if (_inputBuyNumber.length == 0) {
-																			Fluttertoast.showToast(msg: "購入数を入力してください。");
-																			return;
-																		}
-
-																		if (isNumeric(_inputBuyPrice) == false) {
-																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
-																			return;
-																		}
-																		else if (isNumeric(_inputBuyNumber) == false) {
-																			Fluttertoast.showToast(msg: "購入数に数値を入力してください");
-																			return;
-																		}
-
-																		Navigator.pop(context, 1);
-																		Fluttertoast.showToast(msg: "記帳しました。");
-print(_inputBuyPrice + ":" + _inputBuyNumber);
-																	},
-																	child: const Text('記帳')
-																)
-															)
-														]
-													);
-												}
-											);
-										}
-									),
-
-									RaisedButton(
-										padding: const EdgeInsets.all(8.0),
-										child: const Text('売却記帳'),
-										onPressed: (){
-											showDialog(
-												context: context,
-												builder: (BuildContext context) {
-													return SimpleDialog(
-														children: <Widget>[
-															Center(
-																child: Text("売却記帳",
-																	style: TextStyle(
-																		fontSize: 16.0
-																	)
-																)
-															),
-
-															TextField(
-																decoration: new InputDecoration(
-																	border: OutlineInputBorder(),
-																	labelText: "カブ価"
-																),
-																keyboardType: TextInputType.number,
-
-																maxLength: 3,
-																onChanged: (text){
-																	if (text.length > 0) {
-																		_inputSellPrice = text;
-																	}
-																},
-															),
-
-															TextField(
-																decoration: new InputDecoration(
-																	border: OutlineInputBorder(),
-																	labelText: "売却数"
-																),
-																keyboardType: TextInputType.number,
-
-																maxLength: 5,
-																onChanged: (text){
-																	if (text.length > 0) {
-																		_inputSellNumber = text;
-																	}
-																},
-															),
-
-															Container(
-																padding: const EdgeInsets.all(4.0),
-																child: Icon(
-																	Icons.show_chart,
-																	color: Colors.yellow,
-																	size: 18.0
-																)
-															),
-
-															Center(
-																child: RaisedButton(
-																	onPressed: (){
-																		if (_inputSellPrice.length == 0) {
-																			Fluttertoast.showToast(msg: "カブ価を入力してください。");
-																			return;
-																		}
-																		else if (_inputSellNumber.length == 0) {
-																			Fluttertoast.showToast(msg: "売却数を入力してください。");
-																			return;
-																		}
-
-																		if (isNumeric(_inputSellPrice) == false) {
-																			Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
-																			return;
-																		}
-																		else if (isNumeric(_inputSellNumber) == false) {
-																			Fluttertoast.showToast(msg: "売却数に数値を入力してください");
-																			return;
-																		}
-
-																		Navigator.pop(context, 1);
-																		Fluttertoast.showToast(msg: "記帳しました。");
-print(_inputSellPrice + ":" + _inputSellNumber);
-																	},
-																	child: const Text('記帳')
-																)
-															)
-														]
-													);
-												}
-											);
-										}
-									)
-
+									_createHomePageButtonNowPrice(),
+									_createHomePageButtonBuy(),
+									_createHomePageButtonSell()
 								]
 							),
 
-							Card(child: Column(
-								children: <Widget>[
-									ListTile(
-										title:    Text("現在カブ価：${(this._nowPrice == 0 ? "【現在カブ価未記帳】" : this._nowPrice)}"),
-										subtitle: Text("現在日付　：" + _systemTimeString)
-									)
-								])
-							),
-
-							Card(child: Column(
-								children: <Widget>[
-									const ListTile(
-										title:    Text("計算範囲"),
-										subtitle: Text("2020/05/17-2020/05/23"),
-									)
-								])
-							),
-
-							Card(
-								child: Column(children: [
-									ListTile(
-										title: Text("保有カブ数：${_possessionStockNum} カブ")
-									),
-									ListTile(
-										title: Text("平均取得額：${_possessionStockAvePrice}　ベル")
-									),
-									ListTile(
-										title: Text("評価損益額：")
-									),
-									ListTile(
-										title: Text("利益率　　：")
-									)
-								])
-							)
+							_createHomePageCardNowPriceInfo(),
+							_createHomePageCardStocksInfo()
 						]
 					));
 				}
 			)
 		));
+	}
+
+
+	RaisedButton _createHomePageButtonNowPrice() {
+		return (
+			RaisedButton(
+				padding: const EdgeInsets.all(8.0),
+				child: const Text('現在カブ値記帳'),
+				onPressed: (){
+					showDialog(
+						context: context,
+						builder: (BuildContext context) {
+							return SimpleDialog(
+								children: <Widget>[
+									Center(
+										child: Text("現在カブ価記帳",
+										style: TextStyle(
+											fontSize: 16.0
+										),),
+									),
+
+									TextField(
+										decoration: new InputDecoration(
+											border: OutlineInputBorder(),
+											labelText: "カブ価"
+										),
+										keyboardType: TextInputType.number,
+
+										maxLength: 3,
+										onChanged: (text){
+											if (text.length > 0) {
+												_inputNowPrice = text;
+											}
+										},
+									),
+
+									Container(
+										padding: const EdgeInsets.all(4.0),
+										child: Icon(
+											Icons.show_chart,
+											color: Colors.red,
+											size: 18.0
+										)
+									),
+
+									Center(
+										child: RaisedButton(
+											onPressed: (){
+												if (_inputNowPrice.length == 0) {
+													Fluttertoast.showToast(msg: "カブ価を入力してください。");
+													return;
+												}
+
+												if (isNumeric(_inputNowPrice) == false) {
+													Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
+													return;
+												}
+
+												int tmp = int.parse(_inputNowPrice);
+												if (tmp <= 0) {
+													if (_inputNowPrice.length == 0) {
+														Fluttertoast.showToast(msg: "カブ価には0よりも大きい値を入力してください。");
+														return;
+													}
+												}
+												else {
+													// 現在株価を更新
+													setState(() {
+														_nowPrice = tmp;
+													});
+												}
+
+												Navigator.pop(context, 1);
+												Fluttertoast.showToast(msg: "現在カブ価を更新しました。");
+print(_nowPrice);
+											},
+											child: const Text('記帳')
+										)
+									)
+								],
+							);
+						}
+					);
+				}
+			)
+		);
+	}
+
+
+	// 購入ボタンおよび押下後のダイアログ
+	RaisedButton _createHomePageButtonBuy() {
+		return (
+			RaisedButton(
+				padding: const EdgeInsets.all(8.0),
+				child: const Text('購入記帳'),
+				onPressed: (){
+					showDialog(
+						context: context,
+						builder: (BuildContext context) {
+							return SimpleDialog(
+								children: <Widget>[
+									Center(
+										child: Text("購入記帳",
+											style: TextStyle(
+												fontSize: 16.0
+											)
+										)
+									),
+
+									TextField(
+										decoration: new InputDecoration(
+											border: OutlineInputBorder(),
+											labelText: "カブ価"
+										),
+										keyboardType: TextInputType.number,
+
+										maxLength: 3,
+										onChanged: (text){
+											if (text.length > 0) {
+												_inputBuyPrice = text;
+											}
+										},
+									),
+
+									TextField(
+										decoration: new InputDecoration(
+											border: OutlineInputBorder(),
+											labelText: "購入数"
+										),
+										keyboardType: TextInputType.number,
+
+										maxLength: 5,
+										onChanged: (text){
+											if (text.length > 0) {
+												_inputBuyNumber = text;
+											}
+										},
+									),
+
+									Container(
+										padding: const EdgeInsets.all(4.0),
+										child: Icon(
+											Icons.show_chart,
+											color: Colors.green,
+											size: 18.0
+										)
+									),
+
+									Center(
+										child: RaisedButton(
+											onPressed: (){
+												if (_inputBuyPrice.length == 0) {
+													Fluttertoast.showToast(msg: "カブ価を入力してください。");
+													return;
+												}
+												else if (_inputBuyNumber.length == 0) {
+													Fluttertoast.showToast(msg: "購入数を入力してください。");
+													return;
+												}
+
+												if (isNumeric(_inputBuyPrice) == false) {
+													Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
+													return;
+												}
+												else if (isNumeric(_inputBuyNumber) == false) {
+													Fluttertoast.showToast(msg: "購入数に数値を入力してください");
+													return;
+												}
+
+												Navigator.pop(context, 1);
+												Fluttertoast.showToast(msg: "記帳しました。");
+	print(_inputBuyPrice + ":" + _inputBuyNumber);
+											},
+											child: const Text('記帳')
+										)
+									)
+								]
+							);
+						}
+					);
+				}
+			)
+		);
+	}
+
+	// 売却ボタンおよび押下後のダイアログ
+	RaisedButton _createHomePageButtonSell() {
+		return (
+			RaisedButton(
+				padding: const EdgeInsets.all(8.0),
+				child: const Text('売却記帳'),
+				onPressed: (){
+					showDialog(
+						context: context,
+						builder: (BuildContext context) {
+							return SimpleDialog(
+								children: <Widget>[
+									Center(
+										child: Text("売却記帳",
+											style: TextStyle(
+												fontSize: 16.0
+											)
+										)
+									),
+
+									TextField(
+										decoration: new InputDecoration(
+											border: OutlineInputBorder(),
+											labelText: "カブ価"
+										),
+										keyboardType: TextInputType.number,
+
+										maxLength: 3,
+										onChanged: (text){
+											if (text.length > 0) {
+												_inputSellPrice = text;
+											}
+										},
+									),
+
+									TextField(
+										decoration: new InputDecoration(
+											border: OutlineInputBorder(),
+											labelText: "売却数"
+										),
+										keyboardType: TextInputType.number,
+
+										maxLength: 5,
+										onChanged: (text){
+											if (text.length > 0) {
+												_inputSellNumber = text;
+											}
+										},
+									),
+
+									Container(
+										padding: const EdgeInsets.all(4.0),
+										child: Icon(
+											Icons.show_chart,
+											color: Colors.yellow,
+											size: 18.0
+										)
+									),
+
+									Center(
+										child: RaisedButton(
+											onPressed: (){
+												if (_inputSellPrice.length == 0) {
+													Fluttertoast.showToast(msg: "カブ価を入力してください。");
+													return;
+												}
+												else if (_inputSellNumber.length == 0) {
+													Fluttertoast.showToast(msg: "売却数を入力してください。");
+													return;
+												}
+
+												if (isNumeric(_inputSellPrice) == false) {
+													Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
+													return;
+												}
+												else if (isNumeric(_inputSellNumber) == false) {
+													Fluttertoast.showToast(msg: "売却数に数値を入力してください");
+													return;
+												}
+
+												Navigator.pop(context, 1);
+												Fluttertoast.showToast(msg: "記帳しました。");
+	print(_inputSellPrice + ":" + _inputSellNumber);
+											},
+											child: const Text('記帳')
+										)
+									)
+								]
+							);
+						}
+					);
+				}
+			)
+		);
+	}
+
+
+	// 現在株価などの表示カード
+	Column _createHomePageCardNowPriceInfo() {
+		return (
+			Column(children: [
+				Card(child: Column(
+					children: <Widget>[
+						ListTile(
+							title:    Text("現在カブ価：${(this._nowPrice == 0 ? "【現在カブ価未記帳】" : this._nowPrice)}"),
+							subtitle: Text("現在日付　：" + _systemTimeString)
+						)
+					])
+				),
+
+				Card(child: Column(
+					children: <Widget>[
+						const ListTile(
+							title:    Text("計算範囲"),
+							subtitle: Text("2020/05/17-2020/05/23"),
+						)
+					])
+				)
+			])
+		);
+	}
+
+
+	// 保有株式数などの情報表示カード
+	Card _createHomePageCardStocksInfo() {
+		return (
+			Card(
+				child: Column(children: [
+					ListTile(
+						title: Text("保有カブ数：${_possessionStockNum} カブ")
+					),
+					ListTile(
+						title: Text("平均取得額：${_possessionStockAvePrice}　ベル")
+					),
+					ListTile(
+						title: Text("評価損益額：")
+					),
+					ListTile(
+						title: Text("利益率　　：")
+					)
+				])
+			)
+		);
 	}
 
 
