@@ -96,6 +96,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 	// タブ関連
 	PageController _pageController;
+	// 表示しているページ番号
 	int _currentIndex = 0;
 	List<Widget> _pageWidgets = new List(3);
 
@@ -117,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
 	// 保有カブ数
 	int _possessionStockNum = 0;
 	int _possessionStockAvePrice = 0;
-
 
 	@override
 	void initState() {
@@ -200,7 +200,6 @@ class _MyHomePageState extends State<MyHomePage> {
 		);
 		// セッティング画面
 		_pageWidgets[2] = _createSettingsPage();
-
 	}
 
 	@override
@@ -352,33 +351,29 @@ class _MyHomePageState extends State<MyHomePage> {
 	// ホーム画面
 	Container _createHomePage() {
 		return (new Container(
-			child: ListView.builder(
-				itemCount: 1,
-				itemBuilder: (context, int index) {
-					return (Column(
-						children: <Widget>[
-							Container(
-								padding: const EdgeInsets.all(2),
-							),
+			child: Column(
+					children: <Widget>[
+						Container(
+							padding: const EdgeInsets.all(2),
+						),
 
-							Column(
-								// ボタンを横幅最大まで伸ばすため
-								crossAxisAlignment: CrossAxisAlignment.stretch,
+						Column(
+							// ボタンを横幅最大まで伸ばすため
+							crossAxisAlignment: CrossAxisAlignment.stretch,
 
-								children: <Widget>[
-									_createHomePageButtonNowPrice(),
-									_createHomePageButtonBuy(),
-									_createHomePageButtonSell()
-								]
-							),
+							children: <Widget>[
+								_createHomePageButtonNowPrice(),
+								_createHomePageButtonBuy(),
+								_createHomePageButtonSell()
+							]
+						),
 
-							_createHomePageCardNowPriceInfo(),
-							_createHomePageCardStocksInfo()
-						]
-					));
-				}
+						_createHomePageCardNowPriceInfo(),
+						_createHomePageCardStocksInfo()
+					]
+				)
 			)
-		));
+		);
 	}
 
 
@@ -408,11 +403,11 @@ class _MyHomePageState extends State<MyHomePage> {
 										keyboardType: TextInputType.number,
 
 										maxLength: 3,
-										onChanged: (text){
+										onChanged: (text) {
 											if (text.length > 0) {
 												_inputNowPrice = text;
 											}
-										},
+										}
 									),
 
 									Container(
@@ -426,7 +421,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 									Center(
 										child: RaisedButton(
-											onPressed: (){
+											onPressed: () {
 												if (_inputNowPrice.length == 0) {
 													Fluttertoast.showToast(msg: "カブ価を入力してください。");
 													return;
@@ -496,11 +491,11 @@ print(_nowPrice);
 										keyboardType: TextInputType.number,
 
 										maxLength: 3,
-										onChanged: (text){
+										onChanged: (text) {
 											if (text.length > 0) {
 												_inputBuyPrice = text;
 											}
-										},
+										}
 									),
 
 									TextField(
@@ -511,11 +506,11 @@ print(_nowPrice);
 										keyboardType: TextInputType.number,
 
 										maxLength: 5,
-										onChanged: (text){
+										onChanged: (text) {
 											if (text.length > 0) {
 												_inputBuyNumber = text;
 											}
-										},
+										}
 									),
 
 									Container(
@@ -550,7 +545,7 @@ print(_nowPrice);
 
 												Navigator.pop(context, 1);
 												Fluttertoast.showToast(msg: "記帳しました。");
-	print(_inputBuyPrice + ":" + _inputBuyNumber);
+print(_inputBuyPrice + ":" + _inputBuyNumber);
 											},
 											child: const Text('記帳')
 										)
@@ -607,11 +602,11 @@ print(_nowPrice);
 										keyboardType: TextInputType.number,
 
 										maxLength: 5,
-										onChanged: (text){
+										onChanged: (text) {
 											if (text.length > 0) {
 												_inputSellNumber = text;
 											}
-										},
+										}
 									),
 
 									Container(
@@ -646,7 +641,7 @@ print(_nowPrice);
 
 												Navigator.pop(context, 1);
 												Fluttertoast.showToast(msg: "記帳しました。");
-	print(_inputSellPrice + ":" + _inputSellNumber);
+print(_inputSellPrice + ":" + _inputSellNumber);
 											},
 											child: const Text('記帳')
 										)
@@ -665,14 +660,18 @@ print(_nowPrice);
 	Column _createHomePageCardNowPriceInfo() {
 		return (
 			Column(children: [
-				Card(child: Column(
-					children: <Widget>[
-						ListTile(
-							title:    Text("現在カブ価：${(this._nowPrice == 0 ? "【現在カブ価未記帳】" : this._nowPrice)}"),
-							subtitle: Text("現在日付　：" + _systemTimeString)
+				Builder(builder: (context) {
+					return (
+						Card(child: Column(
+							children: <Widget>[
+								ListTile(
+									title:    Text("現在カブ価：${(this._nowPrice == 0 ? "【現在カブ価未記帳】" : this._nowPrice)}"),
+									subtitle: Text("現在日付　：" + _systemTimeString)
+								)
+							])
 						)
-					])
-				),
+					);
+				}),
 
 				Card(child: Column(
 					children: <Widget>[
@@ -764,3 +763,4 @@ print(_nowPrice);
 	}
 
 }
+
