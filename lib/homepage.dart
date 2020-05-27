@@ -82,6 +82,8 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 
 	@override
 	void initState() {
+		super.initState();
+
 		// 処理日反映
 		initializeDateFormatting('ja');
 		_systemTimeString = (DateFormat('yyyy/MM/dd').format(DateTime.now())).toString();
@@ -90,6 +92,13 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 		_nowPrice = 0;
 		_inputNowPrice = "";
 	}
+
+
+	@override
+	Widget build(BuildContext context) {
+		return (_createHomePage(context));
+	}
+
 
 	// ホーム画面
 	Container _createHomePage(BuildContext context) {
@@ -449,11 +458,5 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 				])
 			)
 		);
-	}
-
-
-	@override
-	Widget build(BuildContext context) {
-		return (_createHomePage(context));
 	}
 }
