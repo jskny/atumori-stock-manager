@@ -101,29 +101,28 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 
 
 	// ホーム画面
-	Container _createHomePage(BuildContext context) {
-		return (new Container(
-			child: Column(
-					children: <Widget>[
-						Container(
-							padding: const EdgeInsets.all(2),
-						),
+	ListView _createHomePage(BuildContext context) {
+		return (
+			ListView(
+				children: <Widget>[
+					Container(
+						padding: const EdgeInsets.all(2),
+					),
 
-						Column(
-							// ボタンを横幅最大まで伸ばすため
-							crossAxisAlignment: CrossAxisAlignment.stretch,
+					Column(
+						// ボタンを横幅最大まで伸ばすため
+						crossAxisAlignment: CrossAxisAlignment.stretch,
 
-							children: <Widget>[
-								_createHomePageButtonNowPrice(context),
-								_createHomePageButtonBuy(context),
-								_createHomePageButtonSell(context)
-							]
-						),
+						children: <Widget>[
+							_createHomePageButtonNowPrice(context),
+							_createHomePageButtonBuy(context),
+							_createHomePageButtonSell(context)
+						]
+					),
 
-						_createHomePageCardNowPriceInfo(context),
-						_createHomePageCardStocksInfo(context)
-					]
-				)
+					_createHomePageCardNowPriceInfo(context),
+					_createHomePageCardStocksInfo(context)
+				]
 			)
 		);
 	}

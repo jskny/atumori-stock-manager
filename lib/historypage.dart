@@ -42,10 +42,11 @@ class TradeInfo {
 
 
 	// 表示
-	void disp() {
+	@override
+	String toString() {
 		// 取引区分：単価：個数
 		// Buy, Sell, Null
-		print("${this.type == 1 ? "B" : (this.type == 2 ? "S" : "N") }, ${this.price}, ${this.number}");
+		return ("${this.type == 1 ? "B" : (this.type == 2 ? "S" : "N") }, ${this.price}, ${this.number}");
 	}
 }
 
@@ -160,7 +161,7 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 								}
 
 								print("${tmpCnt}:${tmpPrice}");
-								this._tradeInfo[i].disp();
+								print(this._tradeInfo[i].toString());
 							}
 
 							if (tmpPrice > 0) {
