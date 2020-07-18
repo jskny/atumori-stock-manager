@@ -131,11 +131,10 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 		// 保有株式数等計算
 		for (int i = 0; i < tradeInfo.length; ++i) {
 			// 日付が先週のものは計算除外
-			// TODO:
-			DateTime dLastSunday = getLastSundayDataTime();
-			Duration dur =  dLastSunday.difference(dLastSunday);
-String differenceInYears = (dur.inDays/365).floor().toString();
-print(differenceInYears + ' years');
+			Duration dur =  tradeInfo[i].date.difference(getLastSundayDataTime());
+			if ((dur.inDays).floor() > 6) {
+				continue;
+			}
 
 			if (tradeInfo[i].type == 1) {
 				// 買付
@@ -179,7 +178,10 @@ print(differenceInYears + ' years');
 							// ログから平均取得残高を計算
 							for (int i = 0; i < tradeInfo.length; ++i) {
 								// 日付が先週のものは計算除外
-								// TODO:
+								Duration dur =  tradeInfo[i].date.difference(getLastSundayDataTime());
+								if ((dur.inDays).floor() > 6) {
+									continue;
+								}
 
 								if (tradeInfo[i].type == 1) {
 									// 買付
@@ -199,8 +201,8 @@ print(differenceInYears + ' years');
 						}
 
 						return (Padding(
-              padding: EdgeInsets.all(0)
-            ));
+							padding: EdgeInsets.all(0)
+						));
 					}
 				)
 			)
