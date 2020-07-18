@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		// DB等から取引記録に値セット
 
 		// 平均取得価格等を算出
-		CalcStockValues();
+		calcStockValues();
 
 		_pageController = new PageController();
 

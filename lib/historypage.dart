@@ -115,7 +115,7 @@ int possessionStockAvePrice = 0;
 
 // 直近日曜日からの取引履歴をもとに、
 // 保有カブ数、平均購入価格を算出する
-void CalcStockValues() {
+void calcStockValues() {
 	possessionStockNum = 0;
 	possessionStockAvePrice = 0;
 
@@ -134,8 +134,14 @@ void CalcStockValues() {
 		}
 	}
 
+
 	if (possessionStockNum > 0) {
 		possessionStockAvePrice = possessionStockAvePrice ~/ possessionStockNum;
+	}
+	else {
+		// 売却により所有数が0となっている場合は、平均取得価格に0をセット
+		possessionStockNum = 0;
+		possessionStockAvePrice = 0;
 	}
 
 	return;
@@ -147,15 +153,7 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 	void initState() {
 		super.initState();
 
-		// 買付ダミー
-		tradeInfo.add(new TradeInfo.fill(1, 50, 150));
-		tradeInfo.add(new TradeInfo.fill(1, 15, 50));
-
-		// 売却ダミー
-		tradeInfo.add(new TradeInfo.fill(2, 35, 200));
-		tradeInfo.add(new TradeInfo.fill(2, 30, 120));
-
-		CalcStockValues();
+		calcStockValues();
 	}
 
 	@override
@@ -166,25 +164,52 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 
 	// 取引履歴画面
 	Container _createHistoryPage(BuildContext context) {
+		if (tradeInfo.length == 0) {
+			return (
+				Container(
+					child: ListView(
+						children: <Widget>[
+							Card(
+								child: Column(
+								children: [
+									ListTile(
+										title: Text(
+											"取引履歴がありません",
+											style: new TextStyle(
+												color: Colors.white,
+												fontSize: 16.0
+											)
+										)
+									)
+								])
+							)
+						])
+					)
+				);
+		}
+
 		return (
 			Container(
 				child: ListView.builder(
 					itemCount: tradeInfo.length,
 					itemBuilder: (context, int index) {
+						// 新しいものから古いものを表示する
+						int tIndex = (tradeInfo.length-1) - index;
+
 						// 買付の場合
-						if (tradeInfo[index].type == 1) {
+						if (tradeInfo[tIndex].type == 1) {
 							return (_historyItemBought(
 									tradeInfo[index].price,
-									tradeInfo[index].number,
-									tradeInfo[index].dateString
+									tradeInfo[tIndex].number,
+									tradeInfo[tIndex].dateString
 								)
 							);
 						}
 						// 売却の場合
-						else if (tradeInfo[index].type == 2) {
+						else if (tradeInfo[tIndex].type == 2) {
 							// 平均取得価格等を再計算
-							CalcStockValues();
-							return (_historyItemSell(tradeInfo[index].price, tradeInfo[index].number, possessionStockAvePrice, tradeInfo[index].dateString));
+							calcStockValues();
+							return (_historyItemSell(tradeInfo[tIndex].price, tradeInfo[tIndex].number, possessionStockAvePrice, tradeInfo[tIndex].dateString));
 						}
 
 						return (Padding(

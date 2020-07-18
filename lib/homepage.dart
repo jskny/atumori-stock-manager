@@ -130,6 +130,9 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 		_inputNowPrice = "";
 		_inputBuyNumber = "";
 		_inputSellNumber = "";
+
+		// 平均取得価格等の再計算
+		calcStockValues();
 	}
 
 
@@ -231,6 +234,9 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 													// 現在株価を更新
 													setState(() {
 														nowPrice = tmp;
+														// 平均取得価格などの再計算
+														calcStockValues();
+
 														Navigator.pop(context, 1);
 														Fluttertoast.showToast(msg: "現在カブ価を更新しました。");
 													});
@@ -319,6 +325,9 @@ print(nowPrice);
 												// 取引記録に追加
 												setState(() {
 													tradeInfo.add(new TradeInfo.fill(1, nowPrice, int.parse(_inputBuyNumber)));
+
+													// 所有カブ数などの再計算
+													calcStockValues();
 												});
 
 												Navigator.pop(context, 1);
@@ -406,6 +415,9 @@ print("${nowPrice}:" + _inputBuyNumber);
 												// 取引記録に追加
 												setState(() {
 													tradeInfo.add(new TradeInfo.fill(2, nowPrice, int.parse(_inputSellNumber)));
+
+													// 所有カブ数などの再計算
+													calcStockValues();
 												});
 
 												Navigator.pop(context, 1);
