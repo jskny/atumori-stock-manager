@@ -70,15 +70,16 @@ class PageWidgetOfHome extends StatefulWidget {
 
 class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 	// 処理日
-	String _systemTimeString = "now loading...";
+	static String _systemTimeString = "now loading...";
 
 	// 現在株価入力用
-	int _nowPrice = 0;
-	String _inputNowPrice = "";
+	static int _nowPrice = 0;
+	static String _inputNowPrice = "";
 
 	// 記帳時
-	String _inputBuyPrice = "", _inputBuyNumber = "";
-	String _inputSellPrice = "", _inputSellNumber = "";
+	static String _inputBuyPrice = "", _inputBuyNumber = "";
+	static String _inputSellPrice = "", _inputSellNumber = "";
+
 
 	@override
 	void initState() {
@@ -89,8 +90,14 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 		_systemTimeString = (DateFormat('yyyy/MM/dd').format(DateTime.now())).toString();
 
 		// 現在株価
-		_nowPrice = 0;
-		_inputNowPrice = "";
+		// _nowPrice = 0;
+
+    // 各種画面入力ボックスのテキスト処理用変数を初期化
+    _inputNowPrice = "";
+    _inputBuyPrice = "";
+    _inputBuyNumber = "";
+    _inputSellPrice = "";
+    _inputSellNumber = "";
 	}
 
 
@@ -416,7 +423,7 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 						Card(child: Column(
 							children: <Widget>[
 								ListTile(
-									title:    Text("現在カブ価：${(this._nowPrice == 0 ? "【現在カブ価未記帳】" : this._nowPrice)}"),
+									title:    Text("現在カブ価：${(_nowPrice == 0 ? "【現在カブ価未記帳】" : _nowPrice)}"),
 									subtitle: Text("現在日付　：" + _systemTimeString)
 								)
 							])

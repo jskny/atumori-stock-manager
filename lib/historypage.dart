@@ -171,7 +171,9 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 							return (_historyItemSell(this._tradeInfo[index].price, this._tradeInfo[index].number, tmpPrice));
 						}
 
-						return (Padding());
+						return (Padding(
+              padding: EdgeInsets.all(0)
+            ));
 					}
 				)
 			)

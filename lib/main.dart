@@ -46,10 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
 	int _currentIndex = 0;
 	List<Widget> _pageWidgets = new List(3);
 
-
 	@override
 	void initState() {
 		super.initState();
+
 		_pageController = new PageController();
 
 		// ホーム画面
