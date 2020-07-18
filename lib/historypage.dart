@@ -93,10 +93,10 @@ class PageWidgetOfHistory extends StatefulWidget {
 }
 
 
-class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
- 	// 取引履歴
-	static List<TradeInfo> _tradeInfo = new List<TradeInfo>();
+// 取引履歴
+List<TradeInfo> tradeInfo = new List<TradeInfo>();
 
+class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 	// 保有カブ数
 	int _possessionStockNum = 0;
 	int _possessionStockAvePrice = 0;
@@ -107,16 +107,16 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 		super.initState();
 
 		// 買付ダミー
-		_tradeInfo.add(new TradeInfo.fill(1, 50, 150));
-		_tradeInfo.add(new TradeInfo.fill(1, 15, 50));
+		tradeInfo.add(new TradeInfo.fill(1, 50, 150));
+		tradeInfo.add(new TradeInfo.fill(1, 15, 50));
 
 		// 売却ダミー
-		_tradeInfo.add(new TradeInfo.fill(2, 35, 200));
-		_tradeInfo.add(new TradeInfo.fill(2, 30, 120));
+		tradeInfo.add(new TradeInfo.fill(2, 35, 200));
+		tradeInfo.add(new TradeInfo.fill(2, 30, 120));
 
 
 		// 保有株式数等計算
-		for (int i = 0; i < _tradeInfo.length; ++i) {
+		for (int i = 0; i < tradeInfo.length; ++i) {
 			// 日付が先週のものは計算除外
 			// TODO:
 			DateTime dLastSunday = getLastSundayDataTime();
@@ -124,10 +124,10 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 String differenceInYears = (dur.inDays/365).floor().toString();
 print(differenceInYears + ' years');
 
-			if (_tradeInfo[i].type == 1) {
+			if (tradeInfo[i].type == 1) {
 				// 買付
-				_possessionStockAvePrice += _tradeInfo[i].price * _tradeInfo[i].number;
-				_possessionStockNum += _tradeInfo[i].number;
+				_possessionStockAvePrice += tradeInfo[i].price * tradeInfo[i].number;
+				_possessionStockNum += tradeInfo[i].number;
 			}
 		}
 		if (_possessionStockNum > 0) {
@@ -146,38 +146,38 @@ print(differenceInYears + ' years');
 		return (
 			Container(
 				child: ListView.builder(
-					itemCount: _tradeInfo.length,
+					itemCount: tradeInfo.length,
 					itemBuilder: (context, int index) {
 						// 買付の場合
-						if (_tradeInfo[index].type == 1) {
-							return (_historyItemBought(_tradeInfo[index].price, _tradeInfo[index].number));
+						if (tradeInfo[index].type == 1) {
+							return (_historyItemBought(tradeInfo[index].price, tradeInfo[index].number));
 						}
 						// 売却の場合
-						else if (_tradeInfo[index].type == 2) {
+						else if (tradeInfo[index].type == 2) {
 							// 平均取得残高計算
 							int tmpPrice = 0;
 							int tmpCnt = 0;
 
 							// ログから平均取得残高を計算
-							for (int i = 0; i < _tradeInfo.length; ++i) {
+							for (int i = 0; i < tradeInfo.length; ++i) {
 								// 日付が先週のものは計算除外
 								// TODO:
 
-								if (_tradeInfo[i].type == 1) {
+								if (tradeInfo[i].type == 1) {
 									// 買付
-									tmpPrice += _tradeInfo[i].price * _tradeInfo[i].number;
-									tmpCnt += _tradeInfo[i].number;
+									tmpPrice += tradeInfo[i].price * tradeInfo[i].number;
+									tmpCnt += tradeInfo[i].number;
 								}
 
 								print("${tmpCnt}:${tmpPrice}");
-								print(_tradeInfo[i].toString());
+								print(tradeInfo[i].toString());
 							}
 
 							if (tmpPrice > 0) {
 								tmpPrice = tmpPrice ~/ tmpCnt;
 							}
 
-							return (_historyItemSell(_tradeInfo[index].price, _tradeInfo[index].number, tmpPrice));
+							return (_historyItemSell(tradeInfo[index].price, tradeInfo[index].number, tmpPrice));
 						}
 
 						return (Padding(

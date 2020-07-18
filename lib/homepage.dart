@@ -19,7 +19,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import "main.dart";
+import "historypage.dart";
 
 
 // 文字列が数値か判定する
@@ -334,6 +334,11 @@ print(_nowPrice);
 													Fluttertoast.showToast(msg: "購入数に数値を入力してください");
 													return;
 												}
+
+												// 取引記録に追加
+												setState(() {
+													tradeInfo.add(new TradeInfo.fill(1, int.parse(_inputBuyPrice), int.parse(_inputBuyNumber)));
+												});
 
 												Navigator.pop(context, 1);
 												Fluttertoast.showToast(msg: "記帳しました。");
