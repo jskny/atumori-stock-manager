@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 import 'homepage.dart';
 
@@ -27,13 +28,15 @@ class TradeInfo {
 
 	// 処理日付等
 	DateTime date;
+	String dateString;
 
 	// 初期化だけをするコンストラクタ
 	TradeInfo() : 
 		this.type = 0,
 		this.price = 0,
 		this.number = 0,
-		this.date = null;
+		this.date = null,
+		this.dateString ="";
 
 
 	// 取引区分、単価価格、数量
@@ -51,6 +54,8 @@ class TradeInfo {
 			initializeDateFormatting('ja');
 			this.date = DateTime.now();
 		}
+
+		this.dateString = DateFormat('yyyy/MM/dd').format(this.date).toString();
 	}
 
 
@@ -158,7 +163,12 @@ print(differenceInYears + ' years');
 					itemBuilder: (context, int index) {
 						// 買付の場合
 						if (tradeInfo[index].type == 1) {
-							return (_historyItemBought(tradeInfo[index].price, tradeInfo[index].number));
+							return (_historyItemBought(
+									tradeInfo[index].price,
+									tradeInfo[index].number,
+									tradeInfo[index].dateString
+								)
+							);
 						}
 						// 売却の場合
 						else if (tradeInfo[index].type == 2) {
@@ -185,7 +195,7 @@ print(differenceInYears + ' years');
 								tmpPrice = tmpPrice ~/ tmpCnt;
 							}
 
-							return (_historyItemSell(tradeInfo[index].price, tradeInfo[index].number, tmpPrice));
+							return (_historyItemSell(tradeInfo[index].price, tradeInfo[index].number, tmpPrice, tradeInfo[index].dateString));
 						}
 
 						return (Padding(
@@ -199,7 +209,7 @@ print(differenceInYears + ' years');
 
  
 	// 取引記録（購入）のオブジェクト
-	Widget _historyItemBought(int price, int count) {
+	Widget _historyItemBought(int price, int count, String date) {
 		return GestureDetector(
 			child:Container(
 				padding: EdgeInsets.all(8.0),
@@ -219,7 +229,7 @@ print(differenceInYears + ' years');
 							"取得単価：${price} ベル\n"
 							"約定数　：${count} カブ\n"
 							"約定金額：${price * count} ベル\n"
-							"購入日　：2020/05/17",
+							"購入日　：${date}",
 							style: TextStyle(
 								color:Colors.lightGreen,
 								fontSize: 14.0
@@ -237,7 +247,7 @@ print(differenceInYears + ' years');
 
 
 	// 取引記録（売却）のオブジェクト
-	Widget _historyItemSell(int sellPrice, int sellCount, int boughtPrice) {
+	Widget _historyItemSell(int sellPrice, int sellCount, int boughtPrice, String date) {
 		return GestureDetector(
 			child:Container(
 					padding: EdgeInsets.all(8.0),
@@ -260,7 +270,7 @@ print(differenceInYears + ' years');
 								"約定数　　　：${sellCount} カブ\n"
 								"約定金額　　：${sellPrice * sellCount} ベル\n"
 								"損益計算　　：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()} ベル\n"
-								"売却日　　　：2020/05/17",
+								"売却日　　　：${date}",
 								style: TextStyle(
 									color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
 									fontSize: 14.0
