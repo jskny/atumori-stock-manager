@@ -436,6 +436,11 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 													return;
 												}
 
+												// 取引記録に追加
+												setState(() {
+													tradeInfo.add(new TradeInfo.fill(2, int.parse(_inputBuyPrice), int.parse(_inputBuyNumber)));
+												});
+
 												Navigator.pop(context, 1);
 												Fluttertoast.showToast(msg: "記帳しました。");
 print(_inputSellPrice + ":" + _inputSellNumber);
@@ -462,7 +467,7 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 						Card(child: Column(
 							children: <Widget>[
 								ListTile(
-									title:    Text("現在カブ価：${(_nowPrice == 0 ? "【現在カブ価未記帳】" : _nowPrice)}"),
+									title:    Text("現在カブ価：${(_nowPrice == 0 ? "【現在カブ価未記帳】" : "${_nowPrice} ベル")}"),
 									subtitle: Text("現在日付　：" + _systemTimeString)
 								)
 							])

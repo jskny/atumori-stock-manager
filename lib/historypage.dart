@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'homepage.dart';
 
@@ -42,7 +43,14 @@ class TradeInfo {
 		this.number = n;
 
 		// 新規登録時の仕入れ日につき、直近日曜日
-		this.date = getLastSundayDataTime();
+		if (t == 1) {
+			// 買付は直近日曜日
+			this.date = getLastSundayDataTime();
+		}
+		else {
+			initializeDateFormatting('ja');
+			this.date = DateTime.now();
+		}
 	}
 
 
