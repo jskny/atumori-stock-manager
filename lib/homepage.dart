@@ -31,6 +31,36 @@ bool isNumeric(String s) {
 }
 
 
+// 直近の日曜日の日付を算出し、その日付を返す
+DateTime getLastSundayDataTime() {
+	initializeDateFormatting('ja');
+	DateTime dResult = DateTime.now();
+
+	// 当日が日曜日ではないならば、
+	// 直前の日曜日まで日付を戻していく
+	if (dResult.weekday != DateTime.sunday) {
+		for (int i = 0; i < 7; ++i) {
+			dResult = dResult.add(Duration(days : -1));
+
+			if (dResult.weekday == DateTime.sunday) {
+				break;
+			}
+		}
+	}
+
+	return (dResult);
+}
+
+
+// 直近の日曜日の日付を算出し、その日付を返す
+String getLastSundayString() {
+	String ret = "";
+	// 計算結果を文字列にする
+	ret = (DateFormat('yyyy/MM/dd').format(getLastSundayDataTime())).toString();
+	return (ret);
+}
+
+
 class _InheritedWidgetForPageOfHome extends InheritedWidget {
 	_InheritedWidgetForPageOfHome({
 	Key key,
@@ -70,7 +100,9 @@ class PageWidgetOfHome extends StatefulWidget {
 
 class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 	// 処理日
-	static String _systemTimeString = "now loading...";
+	String _systemTimeString = "now loading...";
+	// 計算期間
+	String _processingTerm = "now loading...";
 
 	// 現在株価入力用
 	static int _nowPrice = 0;
@@ -89,15 +121,15 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 		initializeDateFormatting('ja');
 		_systemTimeString = (DateFormat('yyyy/MM/dd').format(DateTime.now())).toString();
 
-		// 現在株価
-		// _nowPrice = 0;
+		// 計算期間
+		_processingTerm = getLastSundayString() + "-" + _systemTimeString;
 
-    // 各種画面入力ボックスのテキスト処理用変数を初期化
-    _inputNowPrice = "";
-    _inputBuyPrice = "";
-    _inputBuyNumber = "";
-    _inputSellPrice = "";
-    _inputSellNumber = "";
+		// 各種画面入力ボックスのテキスト処理用変数を初期化
+		_inputNowPrice = "";
+		_inputBuyPrice = "";
+		_inputBuyNumber = "";
+		_inputSellPrice = "";
+		_inputSellNumber = "";
 	}
 
 
@@ -433,9 +465,9 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 
 				Card(child: Column(
 					children: <Widget>[
-						const ListTile(
+						ListTile(
 							title:    Text("計算範囲"),
-							subtitle: Text("2020/05/17-2020/05/23"),
+							subtitle: Text(_processingTerm),
 						)
 					])
 				)
