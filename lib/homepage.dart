@@ -224,10 +224,8 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 
 												int tmp = int.parse(_inputNowPrice);
 												if (tmp <= 0) {
-													if (_inputNowPrice.length == 0) {
-														Fluttertoast.showToast(msg: "カブ価には0よりも大きい値を入力してください。");
-														return;
-													}
+													Fluttertoast.showToast(msg: "カブ価には0よりも大きい値を入力してください。");
+													return;
 												}
 												else {
 													// 現在株価を更新
@@ -313,6 +311,11 @@ print(nowPrice);
 													return;
 												}
 
+												if (int.parse(_inputBuyNumber) <= 0) {
+													Fluttertoast.showToast(msg: "購入数は0よりも大きいな値を入力してください");
+													return;
+												}
+
 												// 取引記録に追加
 												setState(() {
 													tradeInfo.add(new TradeInfo.fill(1, nowPrice, int.parse(_inputBuyNumber)));
@@ -395,6 +398,11 @@ print("${nowPrice}:" + _inputBuyNumber);
 													return;
 												}
 
+												if (int.parse(_inputSellNumber) <= 0) {
+													Fluttertoast.showToast(msg: "購入数は0よりも大きいな値を入力してください");
+													return;
+												}
+
 												// 取引記録に追加
 												setState(() {
 													tradeInfo.add(new TradeInfo.fill(2, nowPrice, int.parse(_inputSellNumber)));
@@ -453,13 +461,23 @@ print("{$nowPrice}:" + _inputSellNumber);
 			Card(
 				child: Column(children: [
 					ListTile(
-						title: Text("保有カブ数：10 カブ")
+						title: Text("保有カブ数：${possessionStockNum} カブ")
 					),
 					ListTile(
-						title: Text("平均取得額：10　ベル")
+						title: Text("平均取得額：${possessionStockAvePrice}　ベル")
 					),
 					ListTile(
-						title: Text("評価損益額：")
+						title: Text("評価損益額：" + (
+							((possessionStockNum == 0) ? "【カブ未保有】" :
+								(nowPrice == 0) ?
+								"【現在カブ価未記帳】" : 
+								((nowPrice < possessionStockAvePrice) ?
+										"【損失発生】" + ((possessionStockAvePrice - nowPrice) * possessionStockNum).toString() :
+										"【利益発生】" + ((nowPrice - possessionStockAvePrice) * possessionStockNum).toString()
+									) + "ベル"
+								)
+							)
+						)
 					),
 					ListTile(
 						title: Text("利益率　　：")

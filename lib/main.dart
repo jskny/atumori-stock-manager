@@ -52,6 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
 	void initState() {
 		super.initState();
 
+		// TODO:
+		// DB等から取引記録に値セット
+
+		// 平均取得価格等を算出
+		CalcStockValues();
+
 		_pageController = new PageController();
 
 		// ホーム画面
