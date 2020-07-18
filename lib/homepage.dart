@@ -19,6 +19,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import "main.dart";
+
 
 // 文字列が数値か判定する
 // https://ja.coder.work/so/string/228144

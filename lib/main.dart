@@ -39,11 +39,13 @@ class MyHomePage extends StatefulWidget {
 	_MyHomePageState createState() => _MyHomePageState();
 }
 
+
 class _MyHomePageState extends State<MyHomePage> {
-	// タブ関連
-	PageController _pageController;
 	// 表示しているページ番号
 	int _currentIndex = 0;
+
+	// タブ関連
+	PageController _pageController;
 	List<Widget> _pageWidgets = new List(3);
 
 	@override

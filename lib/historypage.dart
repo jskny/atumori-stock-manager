@@ -10,6 +10,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'homepage.dart';
+
 
 // 取引ログ格納用構造体
 class TradeInfo {
@@ -23,14 +25,14 @@ class TradeInfo {
 	int number;
 
 	// 処理日付等
-	int date;
+	DateTime date;
 
 	// 初期化だけをするコンストラクタ
 	TradeInfo() : 
 		this.type = 0,
 		this.price = 0,
 		this.number = 0,
-		this.date = 0;
+		this.date = null;
 
 
 	// 取引区分、単価価格、数量
@@ -38,6 +40,9 @@ class TradeInfo {
 		this.type = t;
 		this.price = p;
 		this.number = n;
+
+		// 新規登録時の仕入れ日につき、直近日曜日
+		this.date = getLastSundayDataTime();
 	}
 
 
@@ -90,7 +95,7 @@ class PageWidgetOfHistory extends StatefulWidget {
 
 class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
  	// 取引履歴
-	List<TradeInfo> _tradeInfo = new List<TradeInfo>();
+	static List<TradeInfo> _tradeInfo = new List<TradeInfo>();
 
 	// 保有カブ数
 	int _possessionStockNum = 0;
@@ -102,23 +107,27 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 		super.initState();
 
 		// 買付ダミー
-		this._tradeInfo.add(new TradeInfo.fill(1, 50, 150));
-		this._tradeInfo.add(new TradeInfo.fill(1, 15, 50));
+		_tradeInfo.add(new TradeInfo.fill(1, 50, 150));
+		_tradeInfo.add(new TradeInfo.fill(1, 15, 50));
 
 		// 売却ダミー
-		this._tradeInfo.add(new TradeInfo.fill(2, 35, 200));
-		this._tradeInfo.add(new TradeInfo.fill(2, 30, 120));
+		_tradeInfo.add(new TradeInfo.fill(2, 35, 200));
+		_tradeInfo.add(new TradeInfo.fill(2, 30, 120));
 
 
 		// 保有株式数等計算
-		for (int i = 0; i < this._tradeInfo.length; ++i) {
+		for (int i = 0; i < _tradeInfo.length; ++i) {
 			// 日付が先週のものは計算除外
 			// TODO:
+			DateTime dLastSunday = getLastSundayDataTime();
+			Duration dur =  dLastSunday.difference(dLastSunday);
+String differenceInYears = (dur.inDays/365).floor().toString();
+print(differenceInYears + ' years');
 
-			if (this._tradeInfo[i].type == 1) {
+			if (_tradeInfo[i].type == 1) {
 				// 買付
-				_possessionStockAvePrice += this._tradeInfo[i].price * this._tradeInfo[i].number;
-				_possessionStockNum += this._tradeInfo[i].number;
+				_possessionStockAvePrice += _tradeInfo[i].price * _tradeInfo[i].number;
+				_possessionStockNum += _tradeInfo[i].number;
 			}
 		}
 		if (_possessionStockNum > 0) {
@@ -137,38 +146,38 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 		return (
 			Container(
 				child: ListView.builder(
-					itemCount: this._tradeInfo.length,
+					itemCount: _tradeInfo.length,
 					itemBuilder: (context, int index) {
 						// 買付の場合
-						if (this._tradeInfo[index].type == 1) {
-							return (_historyItemBought(this._tradeInfo[index].price, this._tradeInfo[index].number));
+						if (_tradeInfo[index].type == 1) {
+							return (_historyItemBought(_tradeInfo[index].price, _tradeInfo[index].number));
 						}
 						// 売却の場合
-						else if (this._tradeInfo[index].type == 2) {
+						else if (_tradeInfo[index].type == 2) {
 							// 平均取得残高計算
 							int tmpPrice = 0;
 							int tmpCnt = 0;
 
 							// ログから平均取得残高を計算
-							for (int i = 0; i < this._tradeInfo.length; ++i) {
+							for (int i = 0; i < _tradeInfo.length; ++i) {
 								// 日付が先週のものは計算除外
 								// TODO:
 
-								if (this._tradeInfo[i].type == 1) {
+								if (_tradeInfo[i].type == 1) {
 									// 買付
-									tmpPrice += this._tradeInfo[i].price * this._tradeInfo[i].number;
-									tmpCnt += this._tradeInfo[i].number;
+									tmpPrice += _tradeInfo[i].price * _tradeInfo[i].number;
+									tmpCnt += _tradeInfo[i].number;
 								}
 
 								print("${tmpCnt}:${tmpPrice}");
-								print(this._tradeInfo[i].toString());
+								print(_tradeInfo[i].toString());
 							}
 
 							if (tmpPrice > 0) {
 								tmpPrice = tmpPrice ~/ tmpCnt;
 							}
 
-							return (_historyItemSell(this._tradeInfo[index].price, this._tradeInfo[index].number, tmpPrice));
+							return (_historyItemSell(_tradeInfo[index].price, _tradeInfo[index].number, tmpPrice));
 						}
 
 						return (Padding(
