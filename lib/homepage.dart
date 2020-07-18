@@ -42,7 +42,7 @@ DateTime getLastSundayDataTime() {
 	// 直前の日曜日まで日付を戻していく
 	if (dResult.weekday != DateTime.sunday) {
 		for (int i = 0; i < 7; ++i) {
-			dResult = dResult.add(Duration(days : -1));
+			dResult = dResult.subtract(Duration(days : 1));
 
 			if (dResult.weekday == DateTime.sunday) {
 				break;
