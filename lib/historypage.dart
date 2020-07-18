@@ -108,13 +108,41 @@ class PageWidgetOfHistory extends StatefulWidget {
 
 // 取引履歴
 List<TradeInfo> tradeInfo = new List<TradeInfo>();
+// 保有カブ数
+int possessionStockNum = 0;
+int possessionStockAvePrice = 0;
+
+
+// 直近日曜日からの取引履歴をもとに、
+// 保有カブ数、平均購入価格を算出する
+void CalcStockValues() {
+	possessionStockNum = 0;
+	possessionStockAvePrice = 0;
+
+	// 保有株式数等計算
+	for (int i = 0; i < tradeInfo.length; ++i) {
+		// 日付が先週のものは計算除外
+		Duration dur =  tradeInfo[i].date.difference(getLastSundayDataTime());
+		if ((dur.inDays).floor() > 6) {
+			continue;
+		}
+
+		if (tradeInfo[i].type == 1) {
+			// 買付
+			possessionStockAvePrice += tradeInfo[i].price * tradeInfo[i].number;
+			possessionStockNum += tradeInfo[i].number;
+		}
+	}
+
+	if (possessionStockNum > 0) {
+		possessionStockAvePrice = possessionStockAvePrice ~/ possessionStockNum;
+	}
+
+	return;
+}
+
 
 class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
-	// 保有カブ数
-	int _possessionStockNum = 0;
-	int _possessionStockAvePrice = 0;
-
-
 	@override
 	void initState() {
 		super.initState();
@@ -127,24 +155,7 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 		tradeInfo.add(new TradeInfo.fill(2, 35, 200));
 		tradeInfo.add(new TradeInfo.fill(2, 30, 120));
 
-
-		// 保有株式数等計算
-		for (int i = 0; i < tradeInfo.length; ++i) {
-			// 日付が先週のものは計算除外
-			Duration dur =  tradeInfo[i].date.difference(getLastSundayDataTime());
-			if ((dur.inDays).floor() > 6) {
-				continue;
-			}
-
-			if (tradeInfo[i].type == 1) {
-				// 買付
-				_possessionStockAvePrice += tradeInfo[i].price * tradeInfo[i].number;
-				_possessionStockNum += tradeInfo[i].number;
-			}
-		}
-		if (_possessionStockNum > 0) {
-			_possessionStockAvePrice = _possessionStockAvePrice ~/ _possessionStockNum;
-		}
+		CalcStockValues();
 	}
 
 	@override
@@ -171,33 +182,9 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 						}
 						// 売却の場合
 						else if (tradeInfo[index].type == 2) {
-							// 平均取得残高計算
-							int tmpPrice = 0;
-							int tmpCnt = 0;
-
-							// ログから平均取得残高を計算
-							for (int i = 0; i < tradeInfo.length; ++i) {
-								// 日付が先週のものは計算除外
-								Duration dur =  tradeInfo[i].date.difference(getLastSundayDataTime());
-								if ((dur.inDays).floor() > 6) {
-									continue;
-								}
-
-								if (tradeInfo[i].type == 1) {
-									// 買付
-									tmpPrice += tradeInfo[i].price * tradeInfo[i].number;
-									tmpCnt += tradeInfo[i].number;
-								}
-
-								print("${tmpCnt}:${tmpPrice}");
-								print(tradeInfo[i].toString());
-							}
-
-							if (tmpPrice > 0) {
-								tmpPrice = tmpPrice ~/ tmpCnt;
-							}
-
-							return (_historyItemSell(tradeInfo[index].price, tradeInfo[index].number, tmpPrice, tradeInfo[index].dateString));
+							// 平均取得価格等を再計算
+							CalcStockValues();
+							return (_historyItemSell(tradeInfo[index].price, tradeInfo[index].number, possessionStockAvePrice, tradeInfo[index].dateString));
 						}
 
 						return (Padding(
