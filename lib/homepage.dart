@@ -107,12 +107,12 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 	String _processingTerm = "now loading...";
 
 	// 現在株価入力用
-	static int _nowPrice = 0;
+	static int nowPrice = 0;
 	static String _inputNowPrice = "";
 
 	// 記帳時
-	static String _inputBuyPrice = "", _inputBuyNumber = "";
-	static String _inputSellPrice = "", _inputSellNumber = "";
+	static String _inputBuyNumber = "";
+	static String _inputSellNumber = "";
 
 
 	@override
@@ -128,9 +128,7 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 
 		// 各種画面入力ボックスのテキスト処理用変数を初期化
 		_inputNowPrice = "";
-		_inputBuyPrice = "";
 		_inputBuyNumber = "";
-		_inputSellPrice = "";
 		_inputSellNumber = "";
 	}
 
@@ -214,7 +212,7 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 									Center(
 										child: RaisedButton(
 											onPressed: () {
-												if (_inputNowPrice.length == 0) {
+												if (_inputNowPrice.length <= 0) {
 													Fluttertoast.showToast(msg: "カブ価を入力してください。");
 													return;
 												}
@@ -234,13 +232,12 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 												else {
 													// 現在株価を更新
 													setState(() {
-														_nowPrice = tmp;
+														nowPrice = tmp;
+														Navigator.pop(context, 1);
+														Fluttertoast.showToast(msg: "現在カブ価を更新しました。");
 													});
 												}
-
-												Navigator.pop(context, 1);
-												Fluttertoast.showToast(msg: "現在カブ価を更新しました。");
-print(_nowPrice);
+print(nowPrice);
 											},
 											child: const Text('記帳')
 										)
@@ -278,26 +275,11 @@ print(_nowPrice);
 									TextField(
 										decoration: new InputDecoration(
 											border: OutlineInputBorder(),
-											labelText: "カブ価"
-										),
-										keyboardType: TextInputType.number,
-
-										maxLength: 3,
-										onChanged: (text) {
-											if (text.length > 0) {
-												_inputBuyPrice = text;
-											}
-										}
-									),
-
-									TextField(
-										decoration: new InputDecoration(
-											border: OutlineInputBorder(),
 											labelText: "購入数"
 										),
 										keyboardType: TextInputType.number,
 
-										maxLength: 5,
+										maxLength: 7,
 										onChanged: (text) {
 											if (text.length > 0) {
 												_inputBuyNumber = text;
@@ -317,8 +299,8 @@ print(_nowPrice);
 									Center(
 										child: RaisedButton(
 											onPressed: (){
-												if (_inputBuyPrice.length == 0) {
-													Fluttertoast.showToast(msg: "カブ価を入力してください。");
+												if (nowPrice == 0) {
+													Fluttertoast.showToast(msg: "まず、現在カブ価を入力してください。");
 													return;
 												}
 												else if (_inputBuyNumber.length == 0) {
@@ -326,23 +308,19 @@ print(_nowPrice);
 													return;
 												}
 
-												if (isNumeric(_inputBuyPrice) == false) {
-													Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
-													return;
-												}
-												else if (isNumeric(_inputBuyNumber) == false) {
+												if (isNumeric(_inputBuyNumber) == false) {
 													Fluttertoast.showToast(msg: "購入数に数値を入力してください");
 													return;
 												}
 
 												// 取引記録に追加
 												setState(() {
-													tradeInfo.add(new TradeInfo.fill(1, int.parse(_inputBuyPrice), int.parse(_inputBuyNumber)));
+													tradeInfo.add(new TradeInfo.fill(1, nowPrice, int.parse(_inputBuyNumber)));
 												});
 
 												Navigator.pop(context, 1);
 												Fluttertoast.showToast(msg: "記帳しました。");
-print(_inputBuyPrice + ":" + _inputBuyNumber);
+print("${nowPrice}:" + _inputBuyNumber);
 											},
 											child: const Text('記帳')
 										)
@@ -379,26 +357,11 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 									TextField(
 										decoration: new InputDecoration(
 											border: OutlineInputBorder(),
-											labelText: "カブ価"
-										),
-										keyboardType: TextInputType.number,
-
-										maxLength: 3,
-										onChanged: (text){
-											if (text.length > 0) {
-												_inputSellPrice = text;
-											}
-										},
-									),
-
-									TextField(
-										decoration: new InputDecoration(
-											border: OutlineInputBorder(),
 											labelText: "売却数"
 										),
 										keyboardType: TextInputType.number,
 
-										maxLength: 5,
+										maxLength: 7,
 										onChanged: (text) {
 											if (text.length > 0) {
 												_inputSellNumber = text;
@@ -418,8 +381,8 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 									Center(
 										child: RaisedButton(
 											onPressed: (){
-												if (_inputSellPrice.length == 0) {
-													Fluttertoast.showToast(msg: "カブ価を入力してください。");
+												if (nowPrice == 0) {
+													Fluttertoast.showToast(msg: "まず、現在カブ価を入力してください。");
 													return;
 												}
 												else if (_inputSellNumber.length == 0) {
@@ -427,23 +390,19 @@ print(_inputBuyPrice + ":" + _inputBuyNumber);
 													return;
 												}
 
-												if (isNumeric(_inputSellPrice) == false) {
-													Fluttertoast.showToast(msg: "カブ価に数値を入力してください");
-													return;
-												}
-												else if (isNumeric(_inputSellNumber) == false) {
-													Fluttertoast.showToast(msg: "売却数に数値を入力してください");
+												if (isNumeric(_inputSellNumber) == false) {
+													Fluttertoast.showToast(msg: "購入数に数値を入力してください");
 													return;
 												}
 
 												// 取引記録に追加
 												setState(() {
-													tradeInfo.add(new TradeInfo.fill(2, int.parse(_inputBuyPrice), int.parse(_inputBuyNumber)));
+													tradeInfo.add(new TradeInfo.fill(2, nowPrice, int.parse(_inputSellNumber)));
 												});
 
 												Navigator.pop(context, 1);
 												Fluttertoast.showToast(msg: "記帳しました。");
-print(_inputSellPrice + ":" + _inputSellNumber);
+print("{$nowPrice}:" + _inputSellNumber);
 											},
 											child: const Text('記帳')
 										)
@@ -467,7 +426,7 @@ print(_inputSellPrice + ":" + _inputSellNumber);
 						Card(child: Column(
 							children: <Widget>[
 								ListTile(
-									title:    Text("現在カブ価：${(_nowPrice == 0 ? "【現在カブ価未記帳】" : "${_nowPrice} ベル")}"),
+									title:    Text("現在カブ価：${(nowPrice == 0 ? "【現在カブ価未記帳】" : "${nowPrice} ベル")}"),
 									subtitle: Text("現在日付　：" + _systemTimeString)
 								)
 							])
