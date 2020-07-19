@@ -142,10 +142,10 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 						),
 						Text(
 							"【購入】\n"
-							"取得単価：${price} ベル\n"
-							"約定数　：${count} カブ\n"
+							"取得単価：$price ベル\n"
+							"約定数　：$count カブ\n"
 							"約定金額：${price * count} ベル\n"
-							"購入日　：${date}",
+							"購入日　：$date",
 							style: TextStyle(
 								color:Colors.lightGreen,
 								fontSize: 14.0
@@ -181,12 +181,12 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 							),
 							Text(
 								"【売却】${(sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n"
-								"平均購入単価：${boughtPrice} ベル\n"
-								"売却単価　　：${sellPrice} ベル\n"
-								"約定数　　　：${sellCount} カブ\n"
+								"平均購入単価：$boughtPrice ベル\n"
+								"売却単価　　：$sellPrice ベル\n"
+								"約定数　　　：$sellCount カブ\n"
 								"約定金額　　：${sellPrice * sellCount} ベル\n"
 								"損益計算　　：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()} ベル\n"
-								"売却日　　　：${date}",
+								"売却日　　　：$date",
 								style: TextStyle(
 									color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
 									fontSize: 14.0

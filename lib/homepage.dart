@@ -432,26 +432,25 @@ print("{$nowPrice}:" + _inputSellNumber);
 			Card(
 				child: Column(children: [
 					ListTile(
-						title: Text("保有カブ数：${possessionStockNum} カブ")
+						title: Text("保有カブ数：$possessionStockNum カブ")
 					),
 					ListTile(
-						title: Text("平均取得額：${possessionStockAvePrice}　ベル")
+						title: Text("平均取得額：$possessionStockAvePrice　ベル")
 					),
 					ListTile(
 						title: Text("評価損益額：" + (
 							((possessionStockNum == 0) ? "【カブ未保有】" :
 								(nowPrice == 0) ?
 								"【現在カブ価未記帳】" : 
-								((nowPrice < possessionStockAvePrice) ?
-										"【損失発生】" + ((possessionStockAvePrice - nowPrice) * possessionStockNum).toString() :
-										"【利益発生】" + ((nowPrice - possessionStockAvePrice) * possessionStockNum).toString()
-									) + "ベル"
+								((nowPrice == possessionStockAvePrice) ? "損益発生なし" :
+									((nowPrice < possessionStockAvePrice) ?
+											"【損失発生】" + ((possessionStockAvePrice - nowPrice) * possessionStockNum).toString() :
+											"【利益発生】" + ((nowPrice - possessionStockAvePrice) * possessionStockNum).toString()
+										) + "ベル"
+									)
 								)
 							)
 						)
-					),
-					ListTile(
-						title: Text("利益率　　：")
 					)
 				])
 			)
