@@ -168,19 +168,30 @@ class _MyHomePageState extends State<MyHomePage> {
 													fontSize: 14.0
 												)
 											)
-										)
+										),
 									]
 								)
 							),
 
 							Card(
-								child: Column(
-									children: [
-										ListTile(
-											title: Text("(c) jskny")
+								child: ListTile(
+									title: Text(
+										"【使い方】\n"
+										"まず、あつ森の現在の株価を「現在カブ値記帳」から登録します。\n"
+										"その後、購入した場合は「購入記帳」から登録します。\n"
+										"同様に、売却した場合は「売却記帳」から登録します。",
+										style: new TextStyle(
+											color: Colors.lightGreen,
+											fontSize: 14.0
 										)
-									]
-								),
+									),
+								)
+							),
+
+							Card(
+								child: ListTile(
+									title: Text("(c) jskny")
+								)
 							)
 						]
 					),
