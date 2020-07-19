@@ -1,4 +1,4 @@
-package com.example.front_end_atumori_stock_manager
+package com.example.atumori_stock_manager
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -33,6 +33,9 @@ dependencies:
   # https://flutter.keicode.com/dart/intl-datetime.php
   intl: ^0.15.7
 
+  # データ保存用
+  path_provider: ^1.6.11
+
   # https://qiita.com/umechanhika/items/734a716dd592e758ba45
   fluttertoast: ^4.0.0
 

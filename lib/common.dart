@@ -4,8 +4,16 @@
  * jskny
  */
  
+//非同期処理用ライブラリ
+import 'dart:async';
+//ファイル出力用ライブラリ
+import 'dart:io';
+
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+
+//アプリがファイルを保存可能な場所を取得するライブラリ
+import 'package:path_provider/path_provider.dart';
 
 
 // 文字列が数値か判定する
@@ -145,3 +153,21 @@ void calcStockValues() {
 	return;
 }
 
+
+
+// 取引ログの保存・読み込み関連処理
+// https://qiita.com/nagahama/items/134fdfb003b700bfebc2
+const String _tradeLogFileName = "tradeLog.txt";
+
+
+//テキストファイルを保存するパスを取得する
+Future<File> getTradeLogFilePath() async {
+	final directory = await getApplicationDocumentsDirectory();
+	return File(directory.path + '/' + _tradeLogFileName);
+}
+
+//テキストファイルの読み込み
+Future<String> loadTradeLog() async {
+	final file = await getTradeLogFilePath();
+	return file.readAsString();
+}

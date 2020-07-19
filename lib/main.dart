@@ -1,4 +1,6 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:io';
+
+import 'package:flutter/material.dart';
 
 import 'homepage.dart';
 import "historypage.dart";
@@ -56,6 +58,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
 		// TODO:
 		// DB等から取引記録に値セット
+		getTradeLogFilePath().then((File file) {
+			file.writeAsString("hello tade db");
+		});
+
+		setState(() {
+			loadTradeLog().then((String value) {
+				setState(() {
+					print("DB value : " + value);
+				});
+			});
+		});
 
 		// 平均取得価格等を算出
 		calcStockValues();
