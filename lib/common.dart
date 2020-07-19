@@ -3,18 +3,15 @@
  * 2020/07/19
  * jskny
  */
- 
-//非同期処理用ライブラリ
+
 import 'dart:async';
-//ファイル出力用ライブラリ
-import 'dart:io';
+import 'dart:ffi';
+
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-
-//アプリがファイルを保存可能な場所を取得するライブラリ
-import 'package:path_provider/path_provider.dart';
-
 
 // 文字列が数値か判定する
 // https://ja.coder.work/so/string/228144
@@ -102,6 +99,24 @@ class TradeInfo {
 	}
 
 
+	// データベースから読み込んだ値で登録する時用
+	TradeInfo.fillByDatabase(int t, int p, int n, String dStr) {
+		this.type = t;
+		this.price = p;
+		this.number = n;
+
+		this.setDate(dStr);
+	}
+
+
+	// 日付・時刻につき再計算
+	void setDate(String tStr) {
+		DateFormat fmt = DateFormat('yyyy/MM/dd');
+		this.date = fmt.parse(tStr);
+		this.dateString = DateFormat('yyyy/MM/dd').format(this.date).toString();
+	}
+
+
 	// 表示
 	@override
 	String toString() {
@@ -154,20 +169,81 @@ void calcStockValues() {
 }
 
 
+// DBと接続
+Database g_database = null;
 
-// 取引ログの保存・読み込み関連処理
-// https://qiita.com/nagahama/items/134fdfb003b700bfebc2
-const String _tradeLogFileName = "tradeLog.txt";
+void connectDatabase() async {
+	if (g_database != null) {
+		if ( g_database.isOpen) {
+			// すでにデータベースが開かれている場合
+			await g_database.close();
+			g_database = null;
+		}
+	}
 
+	final t_db = await openDatabase(
+		join(await getDatabasesPath(), 'database.db'),
+		version: 1,
+		onCreate: (Database db, int version) async {
+			// 取引ログテーブル（LOGDAT）が存在しない場合に、新規作成する
+			//https://cha-shu00.hatenablog.com/entry/2017/10/11/091751
+			String tSql = 
+				"CREATE TABLE IF NOT EXISTS LOGDAT ("
+					"ID INTEGER PRIMARY KEY,"
+					"TYPE INTEGER,"
+					"PRICE INTEGER,"
+					"NUMBER INTEGER,"
+					"DATESTR TEXT"
+				")";
 
-//テキストファイルを保存するパスを取得する
-Future<File> getTradeLogFilePath() async {
-	final directory = await getApplicationDocumentsDirectory();
-	return File(directory.path + '/' + _tradeLogFileName);
+			await db.execute(tSql);
+		}
+	);
+
+	g_database = t_db;
+	return;
 }
 
-//テキストファイルの読み込み
-Future<String> loadTradeLog() async {
-	final file = await getTradeLogFilePath();
-	return file.readAsString();
+
+// データベースから取引ログを読み込み
+// 取引履歴を構築
+bool g_flagIsDbLoaded = false;
+
+void loadDatabase() async {
+	if (g_database == null) {
+print("error db is null");
+		return;
+	}
+	else if (!g_database.isOpen) {
+print("error db isn't open");
+		return;
+	}
+	else if (g_flagIsDbLoaded) {
+		// 初期起動時に読み込みが完了しているならば、
+		// 2度読み込みは行わない。
+print("error db has already loaded.");
+		return;
+	}
+
+	String tSql =
+		"SELECT * FROM LOGDAT "
+		"ORDER BY ID ASC";
+
+	// SQL実行
+	List<Map> result = await g_database.rawQuery(tSql);
+
+	// 実行結果から取引履歴を構築
+	for (Map item in result) {
+		TradeInfo t = new TradeInfo.fillByDatabase(
+			item['TYPE'],
+			item['PRICE'],
+			item['NUMBER'],
+			item['DATESTR']);
+
+			// 取引ログに追加
+			tradeInfo.add(t);
+	}
+
+	g_flagIsDbLoaded = true;
 }
+
