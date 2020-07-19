@@ -3,6 +3,8 @@
 import 'homepage.dart';
 import "historypage.dart";
 
+import 'common.dart';
+
 // 【参考文献】
 // 認証関連
 // https://qiita.com/unsoluble_sugar/items/95b16c01b456be19f9ac

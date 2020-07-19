@@ -19,48 +19,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import "historypage.dart";
-
-
-// 文字列が数値か判定する
-// https://ja.coder.work/so/string/228144
-bool isNumeric(String s) {
-	if(s == null) {
-		return (false);
-	}
-
-	return (int.tryParse(s) != null);
-}
-
-
-// 直近の日曜日の日付を算出し、その日付を返す
-DateTime getLastSundayDataTime() {
-	initializeDateFormatting('ja');
-	DateTime dResult = DateTime.now();
-
-	// 当日が日曜日ではないならば、
-	// 直前の日曜日まで日付を戻していく
-	if (dResult.weekday != DateTime.sunday) {
-		for (int i = 0; i < 7; ++i) {
-			dResult = dResult.subtract(Duration(days : 1));
-
-			if (dResult.weekday == DateTime.sunday) {
-				break;
-			}
-		}
-	}
-
-	return (dResult);
-}
-
-
-// 直近の日曜日の日付を算出し、その日付を返す
-String getLastSundayString() {
-	String ret = "";
-	// 計算結果を文字列にする
-	ret = (DateFormat('yyyy/MM/dd').format(getLastSundayDataTime())).toString();
-	return (ret);
-}
+import "common.dart";
 
 
 class _InheritedWidgetForPageOfHome extends InheritedWidget {
