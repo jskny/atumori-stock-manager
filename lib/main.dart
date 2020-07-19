@@ -1,11 +1,7 @@
-﻿import 'dart:io';
-
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import 'homepage.dart';
 import "historypage.dart";
-
-import 'common.dart';
 
 // 【参考文献】
 // 認証関連
@@ -55,13 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
 	@override
 	void initState() {
 		super.initState();
-
-		// TODO:
-		// DB等から取引記録に値セット
-    connectDatabase();
-
-		// 平均取得価格等を算出
-		calcStockValues();
 
 		_pageController = new PageController();
 

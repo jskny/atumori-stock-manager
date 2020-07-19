@@ -170,15 +170,49 @@ void calcStockValues() {
 
 
 // DBと接続
-Database g_database = null;
-
 void connectDatabase() async {
-	if (g_database != null) {
-		if ( g_database.isOpen) {
-			// すでにデータベースが開かれている場合
-			await g_database.close();
-			g_database = null;
+print("[DB CONNECT START]");
+try {
+	final t_db = await openDatabase(
+		join(await getDatabasesPath(), 'database.db'),
+		version: 1,
+		onCreate: (Database db, int version) async {
+			// 取引ログテーブル（LOGDAT）が存在しない場合に、新規作成する
+			//https://cha-shu00.hatenablog.com/entry/2017/10/11/091751
+			String tSql = 
+				"CREATE TABLE IF NOT EXISTS LOGDAT ("
+					"ID INTEGER PRIMARY KEY,"
+					"TYPE INTEGER,"
+					"PRICE INTEGER,"
+					"NUMBER INTEGER,"
+					"DATESTR TEXT"
+				")";
+
+print(tSql);
+			await db.execute(tSql);
 		}
+	);
+
+//	await t_db.close();
+}
+catch (e) {
+	print(e);
+}
+print("[DB CONNECT END]");
+	return;
+}
+
+
+// データベースから取引ログを読み込み
+// 取引履歴を構築
+bool g_flagIsDbLoaded = false;
+
+void loadDatabase() async {
+	if (g_flagIsDbLoaded) {
+		// 初期起動時に読み込みが完了しているならば、
+		// 2度読み込みは行わない。
+print("[LOAD] error db has already loaded.");
+		return;
 	}
 
 	final t_db = await openDatabase(
@@ -196,54 +230,74 @@ void connectDatabase() async {
 					"DATESTR TEXT"
 				")";
 
+print(tSql);
 			await db.execute(tSql);
 		}
 	);
-
-	g_database = t_db;
-	return;
-}
-
-
-// データベースから取引ログを読み込み
-// 取引履歴を構築
-bool g_flagIsDbLoaded = false;
-
-void loadDatabase() async {
-	if (g_database == null) {
-print("error db is null");
-		return;
-	}
-	else if (!g_database.isOpen) {
-print("error db isn't open");
-		return;
-	}
-	else if (g_flagIsDbLoaded) {
-		// 初期起動時に読み込みが完了しているならば、
-		// 2度読み込みは行わない。
-print("error db has already loaded.");
-		return;
-	}
 
 	String tSql =
 		"SELECT * FROM LOGDAT "
 		"ORDER BY ID ASC";
 
 	// SQL実行
-	List<Map> result = await g_database.rawQuery(tSql);
+	List<Map> result = await t_db.rawQuery(tSql);
 
+print("[DB LOAD START]");
 	// 実行結果から取引履歴を構築
 	for (Map item in result) {
 		TradeInfo t = new TradeInfo.fillByDatabase(
-			item['TYPE'],
+			int.parse(item['TYPE'].toString()),
 			item['PRICE'],
 			item['NUMBER'],
 			item['DATESTR']);
 
 			// 取引ログに追加
 			tradeInfo.add(t);
+print(t.toString());
 	}
 
 	g_flagIsDbLoaded = true;
+//	await t_db.close();
+print("[DB LOAD END]");
+}
+
+
+// 取引記録をデータベースに追加
+void addDatabase(TradeInfo t) async {
+print("[DB INSERT START]");
+	final t_db = await openDatabase(
+		join(await getDatabasesPath(), 'database.db'),
+		version: 1,
+		onCreate: (Database db, int version) async {
+			// 取引ログテーブル（LOGDAT）が存在しない場合に、新規作成する
+			//https://cha-shu00.hatenablog.com/entry/2017/10/11/091751
+			String tSql = 
+				"CREATE TABLE IF NOT EXISTS LOGDAT ("
+					"ID INTEGER PRIMARY KEY,"
+					"TYPE INTEGER,"
+					"PRICE INTEGER,"
+					"NUMBER INTEGER,"
+					"DATESTR TEXT"
+				")";
+
+print(tSql);
+			await db.execute(tSql);
+		}
+	);
+
+
+	String tSql =
+		"INSERT INTO LOGDAT(ID, TYPE, PRICE, NUMBER, DATESTR) "
+		"VALUES(${tradeInfo.length}, ${t.type}, ${t.price}, ${t.number}, '${t.dateString}')";
+
+print(tSql);
+	await t_db.transaction((txn) async {
+		int id = await txn.rawInsert(tSql);
+		print("insert : $id");
+	});
+
+//	await t_db.close();
+print("[DB INSERT END]");
+	return;
 }
 

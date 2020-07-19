@@ -90,6 +90,10 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 		_inputBuyNumber = "";
 		_inputSellNumber = "";
 
+		// DB等から取引記録に値セット
+		connectDatabase();
+		loadDatabase();
+
 		// 平均取得価格等の再計算
 		calcStockValues();
 	}
@@ -283,10 +287,14 @@ print(nowPrice);
 
 												// 取引記録に追加
 												setState(() {
-													tradeInfo.add(new TradeInfo.fill(1, nowPrice, int.parse(_inputBuyNumber)));
+													TradeInfo t = new TradeInfo.fill(1, nowPrice, int.parse(_inputBuyNumber));
+													tradeInfo.add(t);
 
 													// 所有カブ数などの再計算
 													calcStockValues();
+
+													// データベースに登録
+													addDatabase(t);
 												});
 
 												Navigator.pop(context, 1);
@@ -373,10 +381,14 @@ print("${nowPrice}:" + _inputBuyNumber);
 
 												// 取引記録に追加
 												setState(() {
-													tradeInfo.add(new TradeInfo.fill(2, nowPrice, int.parse(_inputSellNumber)));
+													TradeInfo t = new TradeInfo.fill(2, nowPrice, int.parse(_inputSellNumber));
+													tradeInfo.add(t);
 
 													// 所有カブ数などの再計算
 													calcStockValues();
+
+													// データベースに登録
+													addDatabase(t);
 												});
 
 												Navigator.pop(context, 1);
