@@ -180,6 +180,22 @@ class _MyHomePageState extends State<MyHomePage> {
 								)
 							),
 
+
+							Card(
+								child: ListTile(
+									title: Text(
+										"【よくあるご質問】\n"
+										"Q1、購入記帳をしたところ、日曜日の日付で取引履歴が作成されていました。\n"
+										"A、あつもりでは日曜日の午前中のみカブを購入できるため、"
+										"購入日付については日曜日の日付をセットするようにしています（日曜日以外の曜日でカブを買えないため）。",
+										style: new TextStyle(
+											color: Colors.lightGreen,
+											fontSize: 14.0
+										)
+									),
+								)
+							),
+
 							Card(
 								child: ListTile(
 									title: Text("(c) jskny")
