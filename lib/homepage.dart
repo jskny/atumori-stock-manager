@@ -374,8 +374,15 @@ print("${nowPrice}:" + _inputBuyNumber);
 													return;
 												}
 
-												if (int.parse(_inputSellNumber) <= 0) {
+												int tVal = int.parse(_inputSellNumber);
+												if (tVal <= 0) {
 													Fluttertoast.showToast(msg: "購入数は0よりも大きいな値を入力してください");
+													return;
+												}
+
+												// 現在保有数よりも多い売却数の場合
+												if (tVal > possessionStockNum) {
+													Fluttertoast.showToast(msg: "現在保有カブ数よりも売却数が大きいです");
 													return;
 												}
 
