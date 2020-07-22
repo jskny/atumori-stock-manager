@@ -149,12 +149,14 @@ class _MyHomePageState extends State<MyHomePage> {
 										),
 										ListTile(
 											title: Text(
-												"あつまれどうぶつの森のゲーム内における、\n"
-												"ベル稼ぎ手段のカブについて、\n"
-												"購入時の金額などを忘れることを防止するため、\n"
-												"本ソフトウェアは作成されました。\n"
-												"\n"
-												"ご自由にご活用くださいませ",
+												"【使い方】\n"
+												"(1) 【日曜日】\n"
+												"  (i)  「現在カブ値記帳」\n"
+												"  (ii) 「購入記帳」\n"
+												"(2) 【月曜日から土曜日】\n"
+												"  (i) 日々カブ値をチェック\n"
+												"    (a)  「現在カブ値記帳」\n"
+												"    (b) 「売却記帳」\n",
 												style: new TextStyle(
 													color: Colors.lightGreen,
 													fontSize: 14.0
@@ -164,22 +166,6 @@ class _MyHomePageState extends State<MyHomePage> {
 									]
 								)
 							),
-
-							Card(
-								child: ListTile(
-									title: Text(
-										"【使い方】\n"
-										"まず、あつ森の現在の株価を「現在カブ値記帳」から登録します。\n"
-										"その後、購入した場合は「購入記帳」から登録します。\n"
-										"同様に、売却した場合は「売却記帳」から登録します。",
-										style: new TextStyle(
-											color: Colors.lightGreen,
-											fontSize: 14.0
-										)
-									),
-								)
-							),
-
 
 							Card(
 								child: ListTile(
