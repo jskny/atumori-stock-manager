@@ -63,7 +63,7 @@ class TradeInfo {
 	// 取引単価
 	int price;
 	// 売却実行時の単価（過去値参照用）
-	int priceSalled;
+	int pricePossessionStockAve;
 
 	// 取引個数
 	int number;
@@ -76,7 +76,7 @@ class TradeInfo {
 	TradeInfo() : 
 		this.type = 0,
 		this.price = 0,
-		this.priceSalled = 0,
+		this.pricePossessionStockAve = 0,
 		this.number = 0,
 		this.date = null,
 		this.dateString ="";
@@ -87,6 +87,7 @@ class TradeInfo {
 		this.type = t;
 		this.price = p;
 		this.number = n;
+		this.pricePossessionStockAve = 0;
 
 		// 新規登録時の仕入れ日につき、直近日曜日
 		if (t == 1) {
@@ -140,6 +141,9 @@ int possessionStockAvePrice = 0;
 // 直近日曜日からの取引履歴をもとに、
 // 保有カブ数、平均購入価格を算出する
 void calcStockValues() {
+	int buyNum = 0, buySumPrice = 0;
+	int sellNum = 0;
+
 	possessionStockNum = 0;
 	possessionStockAvePrice = 0;
 
@@ -148,19 +152,35 @@ void calcStockValues() {
 		// 日付が先週のものは計算除外
 		Duration dur =  tradeInfo[i].date.difference(getLastSundayDataTime());
 		if ((dur.inDays).floor() > 6) {
+print("last week");
 			continue;
 		}
 
 		if (tradeInfo[i].type == 1) {
 			// 買付
-			possessionStockAvePrice += tradeInfo[i].price * tradeInfo[i].number;
-			possessionStockNum += tradeInfo[i].number;
+			buySumPrice += tradeInfo[i].price * tradeInfo[i].number;
+			buyNum += tradeInfo[i].number;
+		}
+		else if (tradeInfo[i].type == 2) {
+			// 売却
+			sellNum += tradeInfo[i].number;
+		}
+
+		if ((buyNum - sellNum) <= 0) {
+			buySumPrice = 0;
 		}
 	}
 
 
+	possessionStockAvePrice = buySumPrice;
+	possessionStockNum = (buyNum - sellNum);
+
+	if (possessionStockNum < 0) {
+		possessionStockNum = 0;
+	}
+
 	if (possessionStockNum > 0) {
-		possessionStockAvePrice = possessionStockAvePrice ~/ possessionStockNum;
+		possessionStockAvePrice = buySumPrice ~/ possessionStockNum;
 	}
 	else {
 		// 売却により所有数が0となっている場合は、平均取得価格に0をセット
@@ -196,7 +216,7 @@ print("[DB CONNECTED]");
 					"PRICE INTEGER,"
 					"NUMBER INTEGER,"
 					"DATESTR TEXT,"
-					"PRICE_SALLED INTEGER"
+					"POS_STK_AVE_PRICE INTEGER"
 				")";
 
 print(tSql);
@@ -247,8 +267,13 @@ print("[DB LOAD START]");
 			item['NUMBER'],
 			item['DATESTR']);
 
-			// 取引ログに追加
-			tradeInfo.add(t);
+		// 売却ログの売却時の平均取得価格
+		if (t.type == 2) {
+			t.pricePossessionStockAve = item['POS_STK_AVE_PRICE'];
+		}
+
+		// 取引ログに追加
+		tradeInfo.add(t);
 print(t.toString());
 	}
 
@@ -271,8 +296,8 @@ print("[DB INSERT START]");
 	}
 
 	String tSql =
-		"INSERT INTO LOGDAT(ID, TYPE, PRICE, NUMBER, DATESTR, PRICE_SALLED) "
-		"VALUES(${tradeInfo.length}, ${t.type}, ${t.price}, ${t.number}, '${t.dateString}', '${t.priceSalled}')";
+		"INSERT INTO LOGDAT(ID, TYPE, PRICE, NUMBER, DATESTR, POS_STK_AVE_PRICE) "
+		"VALUES(${tradeInfo.length}, ${t.type}, ${t.price}, ${t.number}, '${t.dateString}', '${t.pricePossessionStockAve}')";
 
 print(tSql);
 try {

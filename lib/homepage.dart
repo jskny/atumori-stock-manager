@@ -382,6 +382,8 @@ print("${nowPrice}:" + _inputBuyNumber);
 												// 取引記録に追加
 												setState(() {
 													TradeInfo t = new TradeInfo.fill(2, nowPrice, int.parse(_inputSellNumber));
+													// 売却時の平均取得価格を保存
+													t.pricePossessionStockAve = possessionStockAvePrice;
 													tradeInfo.add(t);
 
 													// 所有カブ数などの再計算

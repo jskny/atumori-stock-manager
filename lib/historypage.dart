@@ -101,7 +101,7 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 						// 買付の場合
 						if (tradeInfo[tIndex].type == 1) {
 							return (_historyItemBought(
-									tradeInfo[index].price,
+									tradeInfo[tIndex].price,
 									tradeInfo[tIndex].number,
 									tradeInfo[tIndex].dateString
 								)
@@ -111,7 +111,7 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 						else if (tradeInfo[tIndex].type == 2) {
 							// 平均取得価格等を再計算
 							calcStockValues();
-							return (_historyItemSell(tradeInfo[tIndex].price, tradeInfo[tIndex].number, possessionStockAvePrice, tradeInfo[tIndex].dateString));
+							return (_historyItemSell(tradeInfo[tIndex].price, tradeInfo[tIndex].number, tradeInfo[tIndex].pricePossessionStockAve, tradeInfo[tIndex].dateString));
 						}
 
 						return (Padding(
