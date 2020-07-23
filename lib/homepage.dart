@@ -39,12 +39,12 @@ class _InheritedWidgetForPageOfHome extends InheritedWidget {
 
 
 class PageWidgetOfHome extends StatefulWidget {
+	final Widget child;
+
 	PageWidgetOfHome({
 		Key key,
 		this.child,
 	}) : super(key: key);
-
-	final Widget child;
 
 	@override
 	PageWidgetOfHomeState createState() => PageWidgetOfHomeState();
@@ -73,11 +73,11 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 	static String _inputBuyNumber = "";
 	static String _inputSellNumber = "";
 
-
 	@override
 	void initState() {
 		super.initState();
 
+print("homepage.dat - initState()");
 		// 処理日反映
 		initializeDateFormatting('ja');
 		_systemTimeString = (DateFormat('yyyy/MM/dd').format(DateTime.now())).toString();
@@ -90,17 +90,36 @@ class PageWidgetOfHomeState extends State<PageWidgetOfHome> {
 		_inputBuyNumber = "";
 		_inputSellNumber = "";
 
-		// DB等から取引記録に値セット
-		connectDatabase();
+		// DBからデータ取得
 		loadDatabase();
-
-		// 平均取得価格等の再計算
 		calcStockValues();
+
+print("homepage.dat - initState() - end");
+	}
+
+
+	// https://stackoverflow.com/questions/51216448/is-there-any-callback-to-tell-me-when-build-function-is-done-in-flutter
+	bool _executeOnce = false;
+	Future<void> executeAfterBuild() async {
+		if (_executeOnce) {
+			return;
+		}
+
+
+		await loadDatabase();
+
+		setState(() {
+print("renew satrt");
+			calcStockValues();
+			_executeOnce = true;
+print("renew end");
+		});
 	}
 
 
 	@override
 	Widget build(BuildContext context) {
+		executeAfterBuild();
 		return (_createHomePage(context));
 	}
 
@@ -456,7 +475,7 @@ print("{$nowPrice}:" + _inputSellNumber);
 						title: Text("保有カブ数：$possessionStockNum カブ")
 					),
 					ListTile(
-						title: Text("平均取得額：$possessionStockAvePrice　ベル")
+						title: Text("平均取得額：$possessionStockAvePrice ベル")
 					),
 					ListTile(
 						title: Text("評価損益額：" + (

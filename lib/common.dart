@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -128,7 +129,7 @@ class TradeInfo {
 	String toString() {
 		// 取引区分：単価：個数
 		// Buy, Sell, Null
-		return ("${this.type == 1 ? "B" : (this.type == 2 ? "S" : "N") }, ${this.price}, ${this.number}");
+		return ("${this.type == 1 ? "B" : (this.type == 2 ? "S" : "N") }, P=${this.price}, N=${this.number}, [${this.dateString}]");
 	}
 }
 
@@ -157,6 +158,8 @@ void calcStockValues() {
 print("last week");
 			continue;
 		}
+
+print(tradeInfo[i].toString());
 
 		if (tradeInfo[i].type == 1) {
 			// 買付
@@ -270,7 +273,21 @@ print("[LOAD] error db has already loaded.");
 
 	// SQL実行
 try {
+	if (tradeInfo.length != 0) {
+		// すでに読み込まれている場合はスキップ
+print("[DB HAS LOADED]");
+		return;
+	}
+
+
 	List<Map> result = await g_database.rawQuery(tSql);
+
+
+	if (tradeInfo.length != 0) {
+		// すでに読み込まれている場合はスキップ
+print("[DB HAS LOADED]");
+		return;
+	}
 
 print("[DB LOAD START]");
 	// 実行結果から取引履歴を構築
@@ -292,8 +309,11 @@ print(t.toString());
 	}
 
 	g_flagIsDbLoaded = true;
+
+	// DB読み込み後平均取得価格等の初期計算を実施
+	calcStockValues();
 	// Flutter全体の再描画を発生させる
-	controllerStream.add(1);
+	controllerStream.add(tradeInfo.length);
 }
 catch (e) {
 	print(e);
@@ -305,7 +325,7 @@ print("[DB LOAD END]");
 
 
 // 取引記録をデータベースに追加
-void addDatabase(TradeInfo t) async {
+Future<void> addDatabase(TradeInfo t) async {
 print("[DB INSERT START]");
 
 	if (g_database == null) {
@@ -332,7 +352,7 @@ print("[DB INSERT END]");
 
 
 // 全データ削除
-void delAllDatabase() async {
+Future<void> delAllDatabase() async {
 print("[DB DELETE-ALL START]");
 
 	if (g_database == null) {

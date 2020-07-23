@@ -1,7 +1,4 @@
-﻿import 'dart:async';
-import 'dart:ffi';
-
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import 'homepage.dart';
 import "historypage.dart";
@@ -42,38 +39,52 @@ class MyHomePage extends StatefulWidget {
 	final String title;
 
 	@override
-	_MyHomePageState createState() => _MyHomePageState();
+	MyHomePageState createState() => MyHomePageState();
 }
 
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
 	// 表示しているページ番号
 	int _currentIndex = 0;
 
 	// タブ関連
-	PageController _pageController;
-	List<Widget> _pageWidgets = new List(3);
+	PageController pageController;
+	List<Widget> pageWidgets = new List(3);
+
+
+	// 各ページ
+	void _setPagesToController() {
+		pageController = new PageController();
+
+		// ホーム画面
+		pageWidgets[0] = new PageWidgetOfHome();
+
+		// 取引履歴画面
+		pageWidgets[1] = new PageWidgetOfHistory();
+		// セッティング画面
+		pageWidgets[2] = new PageWidgetOfSettings();
+	}
+
 
 	@override
 	void initState() {
 		super.initState();
+
+		_setPagesToController();
+		connectDatabase();
 		loadDatabase();
-
-		_pageController = new PageController();
-
-		// ホーム画面
-		_pageWidgets[0] = new PageWidgetOfHome();
-		// 取引履歴画面
-		_pageWidgets[1] = new PageWidgetOfHistory();
-		// セッティング画面
-		_pageWidgets[2] = new PageWidgetOfSettings();
 	}
 
 
 	@override
 	void dispose(){
 		super.dispose();
-		_pageController.dispose();
+		pageController.dispose();
+	}
+
+
+	PageController getPageController() {
+		return (pageController);
 	}
 
 
@@ -100,11 +111,11 @@ class _MyHomePageState extends State<MyHomePage> {
 				stream: controllerStream.stream,
 				builder: (context, snapshot) {
 					return (new PageView(
-						children : _pageWidgets,
+						children : pageWidgets,
 
 						// ページ遷移
-						controller: _pageController,
-						onPageChanged: onPageChanged
+						controller: pageController,
+						onPageChanged: onPageChanged,
 					));
 				}
 			),
@@ -127,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 	// 下部のナビゲーションバーがタップされたときの挙動
 	void onNavigationTapped(int page) {
-		_pageController.animateToPage(
+		pageController.animateToPage(
 			page,
 			duration: const Duration(milliseconds: 300),
 			curve: Curves.ease

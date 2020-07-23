@@ -56,8 +56,8 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 		super.initState();
 
 		// DB等から取引記録に値セット
-		connectDatabase();
-		loadDatabase();
+		// connectDatabase();
+		// loadDatabase();
 
 		calcStockValues();
 	}
@@ -184,15 +184,15 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 								child:Icon(Icons.check_circle_outline),
 							),
 							Text(
-								"【売却】${(sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n"
+								"【売却】${(sellPrice - boughtPrice) == 0 ? "損益発生なし" : (sellPrice - boughtPrice < 0) ? "＜損失発生＞" : "＜利益発生＞"}\n"
 								"平均購入単価：$boughtPrice ベル\n"
 								"売却単価　　：$sellPrice ベル\n"
 								"約定数　　　：$sellCount カブ\n"
 								"約定金額　　：${sellPrice * sellCount} ベル\n"
-								"損益計算　　：${(sellPrice - boughtPrice) > 0 ? "+" : "-"} ${((sellPrice - boughtPrice) * sellCount).abs()} ベル\n"
+								"損益計算　　：${(sellPrice - boughtPrice) == 0 ? "" : ((sellPrice - boughtPrice) > 0 ? "+ " : "- ")}${(sellPrice - boughtPrice) == 0 ? "損益発生なし" : (((sellPrice - boughtPrice) * sellCount).abs())} ${(sellPrice - boughtPrice) != 0 ? "ベル" : ""}\n"
 								"売却日　　　：$date",
 								style: TextStyle(
-									color: (sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red,
+									color: (sellPrice - boughtPrice) == 0 ? Colors.grey : ((sellPrice - boughtPrice < 0) ? Colors.lightBlue : Colors.red),
 									fontSize: 14.0
 								),
 							),
