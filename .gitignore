@@ -47,3 +47,8 @@ app.*.map.json
 # ommit android store key
 *.keystore
 *.jks
+
+
+*.apk
+*.aab
+*.properties

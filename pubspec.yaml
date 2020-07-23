@@ -54,6 +54,7 @@ flutter_icons:
   image_path: "asset/icons/icon.png"
 
 # https://yaba-blog.com/flutter-splash-screen/
+# flutter pub pub run flutter_native_splash:create
 flutter_native_splash:
   image: "asset/icons/icon.png" 
   color: "50E0E0"
