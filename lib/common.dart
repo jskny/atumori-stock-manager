@@ -174,13 +174,9 @@ print("last week");
 
 
 	possessionStockAvePrice = buySumPrice;
-	possessionStockNum = buyNum;
+	possessionStockNum = (buyNum - sellNum);
 
 	if ((buyNum - sellNum) <= 0) {
-		possessionStockNum = 0;
-	}
-
-	if (possessionStockNum < 0) {
 		possessionStockNum = 0;
 	}
 
