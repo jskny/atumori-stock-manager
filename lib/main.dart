@@ -2,6 +2,9 @@
 
 import 'homepage.dart';
 import "historypage.dart";
+import 'settings.dart';
+
+import 'common.dart';
 
 // 【参考文献】
 // 認証関連
@@ -52,6 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
 	void initState() {
 		super.initState();
 
+		// DB等から取引記録に値セット
+		connectDatabase();
+		loadDatabase();
+
 		_pageController = new PageController();
 
 		// ホーム画面
@@ -59,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		// 取引履歴画面
 		_pageWidgets[1] = new PageWidgetOfHistory();
 		// セッティング画面
-		_pageWidgets[2] = _createSettingsPage();
+		_pageWidgets[2] = new PageWidgetOfSettings();
 	}
 
 	@override
@@ -127,72 +134,5 @@ class _MyHomePageState extends State<MyHomePage> {
 			this._currentIndex = index;
 		});
 	}
-
-	// 設定ページ
-	Container _createSettingsPage() {
-		return (new Container(
-			child: ListView(
-				children: <Widget>[
-					Column(
-						children: <Widget>[
-							Card(
-								child: Column(
-									children: [
-										ListTile(
-											title: Text(
-												"カブ価メモ君",
-												style: new TextStyle(
-													color: Colors.white,
-													fontSize: 16.0
-												)
-											)
-										),
-										ListTile(
-											title: Text(
-												"【使い方】\n"
-												"(1) 【日曜日】\n"
-												"  (i)  「現在カブ値記帳」\n"
-												"  (ii) 「購入記帳」\n"
-												"(2) 【月曜日から土曜日】\n"
-												"  (i) 日々カブ値をチェック\n"
-												"    (a)  「現在カブ値記帳」\n"
-												"    (b) 「売却記帳」\n",
-												style: new TextStyle(
-													color: Colors.lightGreen,
-													fontSize: 14.0
-												)
-											)
-										),
-									]
-								)
-							),
-
-							Card(
-								child: ListTile(
-									title: Text(
-										"【よくあるご質問】\n"
-										"Q1、購入記帳をしたところ、日曜日の日付で取引履歴が作成されていました。\n"
-										"A、あつもりでは日曜日の午前中のみカブを購入できるため、"
-										"購入日付については日曜日の日付をセットするようにしています（日曜日以外の曜日でカブを買えないため）。",
-										style: new TextStyle(
-											color: Colors.lightGreen,
-											fontSize: 14.0
-										)
-									),
-								)
-							),
-
-							Card(
-								child: ListTile(
-									title: Text("(c) jskny")
-								)
-							)
-						]
-					),
-				]
-			)
-		));
-	}
-
 }
 

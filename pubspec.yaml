@@ -46,6 +46,8 @@ dev_dependencies:
     sdk: flutter
 
 
+# https://qiita.com/k-nasa/items/33426af4d396b581c101
+# flutter pub pub run flutter_launcher_icons:main
 flutter_icons:
   android: true 
   ios: true

@@ -313,3 +313,28 @@ print("[DB INSERT END]");
 	return;
 }
 
+
+// 全データ削除
+void delAllDatabase() async {
+print("[DB DELETE-ALL START]");
+
+	if (g_database == null) {
+		connectDatabase();
+	}
+
+	String tSql =
+		"DELETE FROM LOGDAT";
+
+print(tSql);
+try {
+	// 全取引履歴の削除を実施
+	await g_database.execute(tSql);
+}
+catch (e) {
+	print(e);
+}
+print("[DB DELETE-ALL END]");
+
+	return;
+}
+
