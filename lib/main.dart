@@ -1,4 +1,7 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+import 'dart:ffi';
+
+import 'package:flutter/material.dart';
 
 import 'homepage.dart';
 import "historypage.dart";
@@ -54,9 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
 	@override
 	void initState() {
 		super.initState();
-
-		// DB等から取引記録に値セット
-		connectDatabase();
 		loadDatabase();
 
 		_pageController = new PageController();
@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		// セッティング画面
 		_pageWidgets[2] = new PageWidgetOfSettings();
 	}
+
 
 	@override
 	void dispose(){
@@ -95,12 +96,17 @@ class _MyHomePageState extends State<MyHomePage> {
 				)
 			),
 
-			body: new PageView(
-				children : _pageWidgets,
+			body: StreamBuilder(
+				stream: controllerStream.stream,
+				builder: (context, snapshot) {
+					return (new PageView(
+						children : _pageWidgets,
 
-				// ページ遷移
-				controller: _pageController,
-				onPageChanged: onPageChanged
+						// ページ遷移
+						controller: _pageController,
+						onPageChanged: onPageChanged
+					));
+				}
 			),
 
 			// 下メニューバー

@@ -55,6 +55,10 @@ class PageWidgetOfHistoryState extends State<PageWidgetOfHistory> {
 	void initState() {
 		super.initState();
 
+		// DB等から取引記録に値セット
+		connectDatabase();
+		loadDatabase();
+
 		calcStockValues();
 	}
 

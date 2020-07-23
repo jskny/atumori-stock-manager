@@ -13,6 +13,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+StreamController<int> controllerStream = StreamController<int>.broadcast();
+
 // 文字列が数値か判定する
 // https://ja.coder.work/so/string/228144
 bool isNumeric(String s) {
@@ -207,7 +209,7 @@ print("possessionStockNum : $possessionStockNum");
 // DBと接続
 Database g_database = null;
 
-void connectDatabase() async {
+Future<void> connectDatabase() async {
 print("[DB CONNECT START]");
 try {
 	if (g_database != null) {
@@ -241,7 +243,7 @@ print(tSql);
 catch (e) {
 	print(e);
 }
-print("[DB CONNECT START]");
+print("[DB CONNECT START FIN]");
 	return;
 }
 
@@ -250,7 +252,7 @@ print("[DB CONNECT START]");
 // 取引履歴を構築
 bool g_flagIsDbLoaded = false;
 
-void loadDatabase() async {
+Future<void> loadDatabase() async {
 	if (g_flagIsDbLoaded) {
 		// 初期起動時に読み込みが完了しているならば、
 		// 2度読み込みは行わない。
@@ -259,7 +261,7 @@ print("[LOAD] error db has already loaded.");
 	}
 
 	if (g_database == null) {
-		connectDatabase();
+		await connectDatabase();
 	}
 
 	String tSql =
@@ -290,12 +292,15 @@ print(t.toString());
 	}
 
 	g_flagIsDbLoaded = true;
+	// Flutter全体の再描画を発生させる
+	controllerStream.add(1);
 }
 catch (e) {
 	print(e);
 }
 
 print("[DB LOAD END]");
+	return;
 }
 
 

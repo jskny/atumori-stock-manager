@@ -35,7 +35,7 @@ dependencies:
   path: any
 
   flutter_launcher_icons: any
-
+  flutter_native_splash: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -52,6 +52,11 @@ flutter_icons:
   android: true 
   ios: true
   image_path: "asset/icons/icon.png"
+
+# https://yaba-blog.com/flutter-splash-screen/
+flutter_native_splash:
+  image: "asset/icons/icon.png" 
+  color: "50E0E0"
 
 
 # For information on the generic Dart part of this file, see the
