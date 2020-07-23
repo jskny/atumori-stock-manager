@@ -142,7 +142,7 @@ int possessionStockAvePrice = 0;
 // 保有カブ数、平均購入価格を算出する
 void calcStockValues() {
 	int buyNum = 0, buySumPrice = 0;
-	int sellNum = 0;
+	int sellNum = 0, sellSumPrice = 0;
 
 	possessionStockNum = 0;
 	possessionStockAvePrice = 0;
@@ -163,31 +163,42 @@ print("last week");
 		}
 		else if (tradeInfo[i].type == 2) {
 			// 売却
+			sellSumPrice += tradeInfo[i].pricePossessionStockAve * tradeInfo[i].number;
 			sellNum += tradeInfo[i].number;
 		}
 
 		if ((buyNum - sellNum) <= 0) {
 			// 取引履歴の中で完全売却が行われた場合
 			buySumPrice = 0;
+			sellSumPrice = 0;
+			buyNum = 0;
+			sellNum = 0;
+print("reset occured !");
 		}
 	}
 
+print("buyNum : $buyNum, buySumPrice : $buySumPrice");
+print("sellNum : $sellNum, sellSumPrice : $sellSumPrice");
 
 	possessionStockAvePrice = buySumPrice;
-	possessionStockNum = (buyNum - sellNum);
+	possessionStockNum = buyNum;
 
 	if ((buyNum - sellNum) <= 0) {
 		possessionStockNum = 0;
 	}
 
 	if (possessionStockNum > 0) {
-		possessionStockAvePrice = buySumPrice ~/ possessionStockNum;
+		possessionStockAvePrice = (buySumPrice - sellSumPrice) ~/ (buyNum - sellNum);
+		possessionStockNum = buyNum - sellNum;
 	}
 	else {
 		// 売却により所有数が0となっている場合は、平均取得価格に0をセット
 		possessionStockNum = 0;
 		possessionStockAvePrice = 0;
 	}
+
+print("possessionStockAvePrice : $possessionStockAvePrice");
+print("possessionStockNum : $possessionStockNum");
 
 	return;
 }
