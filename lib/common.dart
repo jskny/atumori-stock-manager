@@ -167,13 +167,18 @@ print("last week");
 		}
 
 		if ((buyNum - sellNum) <= 0) {
+			// 取引履歴の中で完全売却が行われた場合
 			buySumPrice = 0;
 		}
 	}
 
 
 	possessionStockAvePrice = buySumPrice;
-	possessionStockNum = (buyNum - sellNum);
+	possessionStockNum = buyNum;
+
+	if ((buyNum - sellNum) <= 0) {
+		possessionStockNum = 0;
+	}
 
 	if (possessionStockNum < 0) {
 		possessionStockNum = 0;
