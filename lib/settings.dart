@@ -88,11 +88,11 @@ class PageWidgetOfSettingsState extends State<PageWidgetOfSettings> {
 											title: Text(
 												"【使い方】\n"
 												"(1) 【日曜日】\n"
-												"  (i)  「現在カブ値記帳」\n"
+												"  (i)  「現在カブ価記帳」\n"
 												"  (ii) 「購入記帳」\n"
 												"(2) 【月曜日から土曜日】\n"
-												"  (i) 日々カブ値をチェック\n"
-												"    (a)  「現在カブ値記帳」\n"
+												"  (i) 日々カブ価をチェック\n"
+												"    (a)  「現在カブ価記帳」\n"
 												"    (b) 「売却記帳」\n",
 												style: new TextStyle(
 													color: Colors.lightGreen,
@@ -128,11 +128,38 @@ class PageWidgetOfSettingsState extends State<PageWidgetOfSettings> {
 							Center(
 								child: RaisedButton(
 									onPressed: (){
-										setState(() {
-											tradeInfo.clear();
-											delAllDatabase();
-											Fluttertoast.showToast(msg: "初期化しました");
-										});
+										showDialog(
+											context: context,
+											builder: (BuildContext context) {
+												return SimpleDialog(
+													children: <Widget>[
+														Center(
+															child: Text("本当に初期化しますか？",
+																style: TextStyle(
+																	fontSize: 16.0
+																),
+															),
+														),
+
+														Center(
+															child: RaisedButton(
+																onPressed: (){
+																	setState(() {
+																		tradeInfo.clear();
+																		delAllDatabase();
+
+																		Navigator.pop(context, 1);
+																		Fluttertoast.showToast(msg: "初期化しました");
+																	});
+																},
+
+																child: const Text('取引履歴クリア')
+															)
+														),
+													]
+												);
+											}
+										);
 									},
 
 									child: const Text('取引履歴クリア')
